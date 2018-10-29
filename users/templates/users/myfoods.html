@@ -14,11 +14,11 @@
                 <table>
                     <th>my foods </th>
                     <th>substitutes</th>
-                    {% for food in user.foods_set.all %}
+                    {% for food in myfoods %}
                     <tr>
                         <td>
                             <ul>
-                                <li>{{ food.name }}</li>
+                                <li>{{ food.name }} - {{ food.created_at }}</li>
                             </ul>
                         </td>
                         <td>

@@ -3,6 +3,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+from foods.models import Foods
+from django.contrib.auth.models import User
+
 
 def register(request):
     if request.method == "POST":
@@ -20,5 +23,9 @@ def register(request):
 
 @login_required
 def myfood(request):
-
-    return render(request, 'users/myfoods.html')
+    user = request.user
+    myfoods = user.foods_set.all().order_by('created_at')
+    context = {
+        'myfoods': myfoods
+    }
+    return render(request, 'users/myfoods.html', context)

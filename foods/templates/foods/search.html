@@ -23,12 +23,12 @@
         <div class="ml-5 d-flex flex-wrap">
             {% if status == "ok"%}
             {% for product in products%}
-            <div class="product px-2 pt-2 m-2 border rounded d-flex align-items-start flex-column">
+            <div class="product px-2 pt-2 m-2 border rounded d-flex align-items-end flex-column">
                 <a href="{% url 'foods:subs' category=product.categories_hierarchy code=product.code %}">
-                    <div class="mb-auto">
+                    <div class="">
                         <img src="{{ product.image_small_url }}" class="image">
                     </div>
-                    <div class='p-1'>
+                    <div class='mt-auto'>
                         <p class='name'>{{ product.product_name }} - {{ product.nutrition_grades }}</p>
                     </div>
                 </a>
