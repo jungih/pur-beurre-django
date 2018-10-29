@@ -14,16 +14,19 @@
 
 </header>
 
-<section class="bg-primary">
-    <div class="container bg-secondary">
+<section>
+    <div class="container">
         <div class="ml-5 d-flex flex-wrap">
             {% if status == "ok"%}
             {% for product in products%}
-            <div class="product p-2 m-2 align-self-end">
+            <div class="product p-2 m-2 align-self-end border rounded d-flex flex-column">
                 <a href="{% url 'foods:subs' category=product.categories_hierarchy code=product.code %}">
-
-                    <img src="{{ product.image_small_url }}" class="image">
-                    <p class='name'>{{ product.product_name }} - {{ product.nutrition_grades }}</p>
+                    <div class="mr-auto">
+                        <img src="{{ product.image_small_url }}" class="image">
+                    </div>
+                    <div>
+                        <p class='name'>{{ product.product_name }} - {{ product.nutrition_grades }}</p>
+                    </div>
                 </a>
             </div>
             {% endfor %}

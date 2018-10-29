@@ -274,12 +274,13 @@ header.masthead p {
 }
 
 .product {
-    flex: 0 0 120px;
-    background: #e8a75d
+    flex: 0 0 150px;
+
 }
 
+
 .image {
-    width: 100px;
+    width: 140px;
 }
 
 .service-box {
