@@ -1,0 +1,41 @@
+{% extends 'foods/base.html' %}
+{% block content %}
+<header class="subhead text-center text-white">
+    <h1>
+        Selectionez un proudit à remplacer
+    </h1>
+    <hr>
+    <div class="mb-5">
+        {% include 'foods/search_form.html' %}
+    </div>
+
+    <h2>Du gras, oui mais de qualité !</h2>
+
+
+</header>
+
+<section class="bg-primary">
+    <div class="container bg-secondary">
+        <div class="ml-5 d-flex flex-wrap">
+            {% if status == "ok"%}
+            {% for product in products%}
+            <div class="product p-2 m-2 align-self-end">
+                <a href="{% url 'foods:subs' category=product.categories_hierarchy code=product.code %}">
+
+                    <img src="{{ product.image_small_url }}" class="image">
+                    <p class='name'>{{ product.product_name }} - {{ product.nutrition_grades }}</p>
+                </a>
+            </div>
+            {% endfor %}
+            {% endif%}
+            {% if status != "ok" %}
+            <div class="text-center">
+                <p>{{ status }}</p>
+
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</section>
+{% endblock %}

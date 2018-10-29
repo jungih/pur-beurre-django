@@ -1,0 +1,32 @@
+{% extends "foods/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<header class="bg-primary py-5">
+    <div class="text-center">
+        <h1>register now</h1>
+    </div>
+
+</header>
+<section>
+    <div class="container">
+        <div class="row align-center">
+            <div class="col-8">
+                <form method="POST">
+
+                    {% csrf_token %}
+                    <fieldset class="form-gorup">
+                        <legend class="border-bottom">Login</legend>
+                        {{ form|crispy }}
+                    </fieldset>
+                    <div class="form-group">
+                        <button class="btn" type="submit">Login</button>
+                    </div>
+                </form>
+                <div class="border-top pt-3">
+                    <small class="text-muted">Need an Account?<a href="{% url 'register' %}">Sign Up Now</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+</section>
+{% endblock %}
