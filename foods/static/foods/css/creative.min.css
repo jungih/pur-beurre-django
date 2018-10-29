@@ -223,14 +223,14 @@ img::-moz-selection {
 header.masthead {
     padding-top: 10rem;
     padding-bottom: calc(10rem - 56px);
-    background-image: url(..foods/img/header.jpg);
+    background-image: url(../img/header.jpg);
     background-position: center center;
     background-size: cover
 }
 
 header.subhead {
     padding: 10rem 10rem 5rem 10rem;
-    background-image: url(..foods/img/header1.jpg);
+    background-image: url(../img/header1.jpg);
     background-position: center center;
     background-size: cover
 }
