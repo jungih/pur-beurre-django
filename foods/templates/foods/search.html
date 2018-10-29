@@ -1,16 +1,20 @@
 {% extends 'foods/base.html' %}
 {% block content %}
-<header class="subhead text-center text-white">
-    <h1>
-        Selectionez un proudit à remplacer
-    </h1>
-    <hr>
-    <div class="mb-5">
-        {% include 'foods/search_form.html' %}
+<header class="subhead text-white text-center">
+    <div class="container">
+        <div class="row">
+
+            <div class="w-70 mx-auto">
+                <h1>
+                    Selectionez un proudit à remplacer
+                </h1>
+                <hr>
+                {% include 'foods/search_form.html' %}
+                <h2 class="mt-5">Du gras, oui mais de qualité !</h2>
+            </div>
+            <!-- <div class="col-lg-2"></div> -->
+        </div>
     </div>
-
-    <h2>Du gras, oui mais de qualité !</h2>
-
 
 </header>
 
@@ -19,19 +23,18 @@
         <div class="ml-5 d-flex flex-wrap">
             {% if status == "ok"%}
             {% for product in products%}
-            <div class="product p-2 m-2 align-self-end border rounded d-flex flex-column">
+            <div class="product px-2 pt-2 m-2 border rounded d-flex align-items-start flex-column">
                 <a href="{% url 'foods:subs' category=product.categories_hierarchy code=product.code %}">
-                    <div class="mr-auto">
+                    <div class="mb-auto">
                         <img src="{{ product.image_small_url }}" class="image">
                     </div>
-                    <div>
+                    <div class='p-1'>
                         <p class='name'>{{ product.product_name }} - {{ product.nutrition_grades }}</p>
                     </div>
                 </a>
             </div>
             {% endfor %}
-            {% endif%}
-            {% if status != "ok" %}
+            {% else %}
             <div class="text-center">
                 <p>{{ status }}</p>
 

@@ -1,34 +1,56 @@
 {% extends 'foods/base.html' %}
 {% block content %}
-<header class="text-center text-white d-flex bg-primary">
+<header class="subhead text-white text-center">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12 my-5 py-5">
+        <div class="d-flex justify-content-center">
+            <div class="p-2 bg-primary rounded border">
                 <img src="{{ selected.image_small_url }}">
-                <p>{{ selected.product_name }}</p>
-                {{ selected|json_script:"selected" }}
+                <h4>{{ selected.product_name }} - {{ selected.nutrition_grades }}</h4>
             </div>
         </div>
+        <hr>
+
+        <h4 class="text-uppercase">Du gras, oui mais de qualité !</h4>
+
+
     </div>
+
 </header>
+
 <section>
-
-    <div class="containter">
-        <div class="row">
-
+    <div class="container">
+        <div class="d-flex flex-row justify-content-center flex-nowrap">
+            {% if status == "ok"%}
             {% for sub in products%}
-            <div class="col-lg-4 text-center">
-                <img src="{{ sub.image_small_url }}">
-                <p>{{ sub.product_name }} - {{sub.nutrition_grades}}</p>
+            <div class="product p-2 m-2 align-self-end d-flex flex-column">
+                <div class="mb-2 p-2 border rounded">
+                    <a href="#">
+                        <div>
+                            <img src="{{ sub.image_small_url }}" class="image">
+                        </div>
+                        <div>
+                            <p class='name'>{{ sub.product_name }} - {{ sub.nutrition_grades }}</p>
+                        </div>
+                    </a>
+                </div>
                 {% if user.is_authenticated %}
-                <button value="{{ sub.code }}">enregistrer</button>
+
+                <div class="text-center">
+                    <button value="{{ sub.code }}">enregistrer</button>
+                    {{ sub|json_script:sub.code }}
+                </div>
                 {% endif %}
-                {{ sub|json_script:sub.code }}
             </div>
             {% endfor %}
+            {% else %}
+            <div class="text-center">
+                <p>{{ status }}</p>
+            </div>
+            {% endif %}
         </div>
     </div>
 
 </section>
+
 {% include 'foods/ajax.html' %}
 {% endblock %}

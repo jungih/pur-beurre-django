@@ -9,8 +9,8 @@
 </header>
 <section>
     <div class="container">
-        <div class="row align-center">
-            <div class="col-8">
+        <div class="row">
+            <div class="col-6 mx-auto">
                 <form method="POST">
 
                     {% csrf_token %}
@@ -22,9 +22,8 @@
                         <button class="btn" type="submit">Login</button>
                     </div>
                 </form>
-                <div class="border-top pt-3">
-                    <small class="text-muted">Need an Account?<a href="{% url 'register' %}">Sign Up Now</a>
-                    </small>
+                <div class="border-top pt-3 text-right">
+                    <a href="{% url 'register' %}">Créer votre compte</a>
                 </div>
             </div>
         </div>
