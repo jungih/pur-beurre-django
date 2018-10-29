@@ -28,8 +28,6 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.environ.get('ENV') == 'PRODUCTION':
     DEBUG = False
-    DATABASES['default'] = dj_database_url.config(
-        conn_max_age=600, ssl_require=True)
 
     # Static files (CSS, JavaScript, Images)
     # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -107,6 +105,9 @@ DATABASES = {
 
     }
 }
+if os.environ.get('ENV') == 'PRODUCTION':
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=600, ssl_require=True)
 
 
 # Password validation
