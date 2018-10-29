@@ -40,8 +40,6 @@ if os.environ.get('ENV') == 'PRODUCTION':
     )
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-    DATABASES = {'default': dj_database_url.config(
-        conn_max_age=600, ssl_require=True)}
 
 else:
     DEBUG = True
@@ -50,18 +48,19 @@ else:
     # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'foodlist',
-            'USER': 'test',
-            'HOST': '',
-            'PORT': '5432',
-            'ATOMIC_REQUEST': True,
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'foodlist',
+        'USER': 'test',
+        'HOST': '',
+        'PORT': '5432',
+        'ATOMIC_REQUEST': True,
 
-        }
     }
-
+}
+DATABASES['default'] = dj_database_url.config(
+    conn_max_age=600, ssl_require=True)
 
 # Application definition
 
