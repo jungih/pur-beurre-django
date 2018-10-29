@@ -26,11 +26,13 @@ SECRET_KEY = os.environ.get(
     'SECRET_KEY', '#^&q+xissxf_1%9i3lhtmak=u(a5c@y-ro2($^_7wiu8%go+6#')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+if os.environ.get('ENV') == 'PRODUCTION':
+    DEBUG = False
+else:
+    DEBUG = True
 
 
-DEBUG = True
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['pur-beurre-django.herokuapp.com']
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -132,12 +134,15 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
+
 if os.environ.get('ENV') == 'PRODUCTION':
-    DEBUG = False
-    ALLOWED_HOSTS = ['pur-beurre-django.herokuapp.com']
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     DATABASES['default'] = dj_database_url.config(
         conn_max_age=600, ssl_require=True)
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'static'),
+    )
 # Activate Django-Heroku.
 django_heroku.settings(locals())
