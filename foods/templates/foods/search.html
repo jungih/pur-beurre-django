@@ -1,46 +1,46 @@
 {% extends 'foods/base.html' %}
 {% block content %}
-<header class="subhead text-white text-center">
+<header class="text-white">
     <div class="container">
-        <div class="row">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h1>Selectionnez un proudit à remplacer</h1>
 
-            <div class="w-70 mx-auto">
-                <h1>
-                    Selectionez un proudit à remplacer
-                </h1>
                 <hr>
-                {% include 'foods/search_form.html' %}
-                <h2 class="mt-5">Du gras, oui mais de qualité !</h2>
             </div>
-            <!-- <div class="col-lg-2"></div> -->
+            <div class="col-lg-8">
+                {% include 'foods/search_form.html' %}
+            </div>
         </div>
     </div>
-
 </header>
 
 <section>
     <div class="container">
-        <div class="ml-5 d-flex flex-wrap">
-            {% if status == "ok"%}
-            {% for product in products%}
-            <div class="product px-2 pt-2 m-2 border rounded d-flex align-items-end flex-column">
-                <a href="{% url 'foods:subs' category=product.categories_hierarchy code=product.code %}">
-                    <div class="">
-                        <img src="{{ product.image_small_url }}" class="image">
+        {% if status == "ok" %}
+        <div class="row">
+            {% for product in products %}
+            <div class="col-lg-4 col-md-6 col-sm-12 p-2 text-center border">
+                <a href="{% url 'foods:subs' product.categories_hierarchy product.code %}">
+                    <div class="d-flex justify-content-center flex-column h-90 border">
+                        <div class="border align-self-center">
+                            <img src="{{ product.image_small_url }}" class="rounded img-fluid">
+                        </div>
+
                     </div>
-                    <div class='mt-auto'>
-                        <p class='name'>{{ product.product_name }} - {{ product.nutrition_grades }}</p>
-                    </div>
+                    <span class="name">
+                        {{ product.product_name }} - {{ product.brands }} - {{ product.quantity}}
+                    </span>
                 </a>
-            </div>
-            {% endfor %}
-            {% else %}
-            <div class="text-center">
-                <p>{{ status }}</p>
 
             </div>
-            {% endif %}
+            {% endfor %}
         </div>
+        {% else %}
+        <div class="col p-2 text-center">
+            <h1 class="text-uppercase">{{ status }}</h1>
+        </div>
+        {% endif %}
     </div>
 
 </section>

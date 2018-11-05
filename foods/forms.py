@@ -1,5 +1,3 @@
-from django import forms
+from djago.contrib.auth.models import User
 
-
-class SearchForm(forms.Form):
-    search = forms.CharField(label='search', max_length=100)
+class

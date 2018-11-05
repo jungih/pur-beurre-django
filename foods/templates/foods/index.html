@@ -1,19 +1,17 @@
 {% extends 'foods/base.html' %}
-{%block content%}
-<!-- {% load static %} -->
-<header class="masthead text-center text-white d-flex">
-    <div class="container my-auto">
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <h1 class="text-uppercase">
-                    Du gras, oui mais de qualité !
-                </h1>
+{% block content %}
+{% load static %}
+<header class="masthead text-center text-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <h1 class="text-uppercase">Du gras, oui mais de qualité !</h1>
+
                 <hr>
             </div>
-            <div class="col-lg-8 mx-auto">
-                <p class="text-faded mb-5">
-                    <h2>Trouvez un produit de substitution pour ceux que vous consommez tout les jours.</h2>
-                </p>
+            <div class="col-lg-8">
+
+                <h3 class="mb-3">Trouvez un produit de substitution pour ceux que vous consommez tout les jours.</h3>
                 {% include 'foods/search_form.html' %}
             </div>
         </div>
@@ -22,56 +20,56 @@
 
 <section id="about">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center mb-4">
                 <h2 class="section-heading">Cloette & Rémy</h2>
-                <hr class="my-4">
+                <hr>
                 <h4>De la ratatouille aux croissants</h4>
-                <p class="mb-5">Pur Beurre est l'initiative de deux amoureux de la gastronomie française,
+                <p>Pur Beurre est l'initiative de deux amoureux de la gastronomie française,
                     Colette Tatou
                     et Rémy, que vous avez déjà certainement rencontrés dans notre excellent restaurant Ratatouille.</p>
             </div>
         </div>
-    </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-5 text-center d-flex flex-column">
+                <div class="text-justify mb-auto ">"Nous aimons tous manger, surtout en France !
+                    Personnellement, une
+                    baguette fraîche, du bon fromage de chèvre et un bon vin rouge me suffisent amplement. Comme tout
+                    le monde, je fais mes courses au supermarché. Mais petit à petit je me suis rendue compte, surtout
+                    lorsque nous avons ouvert le restaurant, que je pouvais remplacer les produits aseptisés que
+                    j'avais l'habitude d'acheter par de bons produits du terroir Et souvent pour le même prix !" </div>
+                <div class="">
+                    <img src="{% static 'foods/img/colette.png' %}" alt="Colette" class="profile border" width="150"
+                        height="150">
+                    <p class=""><strong>Colette Tatou</strong></p>
+                </div>
+            </div>
 
-    <div class="row p-5">
-        <div class="col-lg-5 mx-auto text-center">
-            <p class="mb-5 text-justify"> "Nous aimons tous manger, surtout en France ! Personnellement, une
-                baguette fraîche, du
-                bon fromage de chèvre et un bon vin rouge me suffisent amplement. Comme tout le monde, je fais mes
-                courses au supermarché. Mais petit à petit je me suis rendue compte, surtout lorsque nous avons
-                ouvert
-                le restaurant, que je pouvais remplacer les produits aseptisés que j'avais l'habitude d'acheter par
-                de
-                bons produits du terroir Et souvent pour le même prix !"
-            </p>
 
-            <img src="{% static 'foods/img/colette.png' %}" alt="Colette" class="profile border" width="150" height="150">
-            <p><strong>Colette Tatou</strong></p>
-
+            <div class="col-lg-5 text-center d-flex flex-column">
+                <div class="text-justify mb-auto"> "Pour ma part je me rendais déjà dans bien des
+                    magasins car
+                    j'aime beaucoup me balader, surtout
+                    dans les caves et les cuisines. Je connaissais par coeur le contenu des boutiques bio (dont je
+                    raffole)
+                    ainsi que les ingrédients de tous les aliments vendus. Lorsque Colette m'a demandé si elle pouvait
+                    remplacer son Nutella matinal par un aliment plus sain, je savais tout de suite où le trouver.
+                    L'idée
+                    de Pur Beurre était née !"</div>
+                <div class="">
+                    <img src="{% static 'foods/img/remy.jpg' %}" alt="Rémy" class="profile border" width="150" height="150">
+                    <p class=""><strong>Rémy</strong></p>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-5 mx-auto text-center">
-            <p class="mb-5 text-justify"> "Pour ma part je me rendais déjà dans bien des
-                magasins car
-                j'aime beaucoup me balader, surtout
-                dans les caves et les cuisines. Je connaissais par coeur le contenu des boutiques bio (dont je
-                raffole)
-                ainsi que les ingrédients de tous les aliments vendus. Lorsque Colette m'a demandé si elle pouvait
-                remplacer son Nutella matinal par un aliment plus sain, je savais tout de suite où le trouver.
-                L'idée
-                de Pur Beurre était née !"</p>
-            <img src="{% static 'foods/img/remy.jpg' %}" alt="Rémy" class="profile border" width="150" height="150">
-            <p><strong>Rémy</strong></p>
-        </div>
-
 
     </div>
 </section>
 
 <section class="bg-primary text-white" id="contact">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
                 <h2 class="section-heading">Contactez-nous !</h2>
                 <hr class="light my-4">
                 <p class="mb-5">Ready to start your next project with us? That's great! Give us a call or send us an

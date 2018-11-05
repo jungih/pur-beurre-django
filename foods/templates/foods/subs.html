@@ -1,49 +1,44 @@
 {% extends 'foods/base.html' %}
 {% block content %}
-<header class="subhead text-white text-center">
-    <div class="container">
-        <div class="d-flex justify-content-center">
-            <div class="p-2 bg-primary rounded border">
-                <img src="{{ selected.image_small_url }}">
-                <h4>{{ selected.product_name }} - {{ selected.nutrition_grades }}</h4>
-                {{ selected|json_script:"selected" }}
-            </div>
-        </div>
-        <hr>
+<header class="selected text-center" style="background-image:url({{ selected.image_url }});padding:0;">
+    <div class='selected'>
 
-        <h4 class="text-uppercase">Du gras, oui mais de qualité !</h4>
+        <a href="{% url 'foods:detail' selected.code %}">
+            <img class="img-thumbnail" src="{{ selected.image_small_url }}">
+            <h4>{{ selected.product_name }} - {{ selected.nutrition_grades }}</h4>
+            {{ selected|json_script:"selected" }}
+        </a>
 
     </div>
-
 </header>
 
 <section>
     <div class="container">
-        <div class="d-flex flex-row justify-content-center flex-wrap">
+        <div class="row">
             {% if status == "ok"%}
             {% for sub in products%}
-            <div class="product p-2 m-2 align-self-end d-flex flex-column">
-                <div class="mb-2 p-2 border rounded">
-                    <a href="#">
-                        <div>
-                            <img src="{{ sub.image_small_url }}" class="image">
-                        </div>
-                        <div>
-                            <p class='name'>{{ sub.product_name }} - {{ sub.nutrition_grades }}</p>
-                        </div>
-                    </a>
+            <div class="col-lg-4 col-md-6 col-sm-12 p-2 text-center">
+                <div class="d-flex flex-column h-100">
+                    <div class="">
+                        <a href="{% url 'foods:detail' sub.code %}">
+                            <img class="img-fluid rounded" src="{{ sub.image_small_url }}">
+                    </div>
+                    <div class="align-self-center">
+                        <span class='name'>{{ sub.product_name }} - {{ sub.nutrition_grades }}</span>
+                        </a>
+                    </div>
+                    <div>
+                        {% if user.is_authenticated %}
+                        <button class="save" value="{{ sub.code }}">enregistrer</button>
+                        {{ sub|json_script:sub.code }}
+                        {% endif %}
+                    </div>
                 </div>
-                {% if user.is_authenticated %}
-                <div class="text-center">
-                    <button class="save" value="{{ sub.code }}">enregistrer</button>
-                    {{ sub|json_script:sub.code }}
-                </div>
-                {% endif %}
             </div>
             {% endfor %}
             {% else %}
-            <div class="text-center">
-                <p>{{ status }}</p>
+            <div class="col">
+                <h1 class="text-center text-uppercase">{{ status }}</h1>
             </div>
             {% endif %}
         </div>

@@ -1,0 +1,20 @@
+{% extends 'foods/base.html' %}
+{% block content %}
+<header class="selected text-center" style='background-image:url({{ product.image_url }});padding:0;'>
+    <div class='selected'>
+        <img class="img-thumbnail" src="{{ product.image_small_url }}">
+        <h4>{{ product.product_name }} - {{ product.nutrition_grades }}</h4>
+
+    </div>
+
+</header>
+
+<section>
+    <div class="container">
+        <div class="row">
+            nothing here yet
+        </div>
+
+</section>
+
+{% endblock %}

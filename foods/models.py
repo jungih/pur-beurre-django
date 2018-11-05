@@ -8,8 +8,7 @@ class Foods(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
     image_url = models.CharField(max_length=200, blank=True, null=True)
     nutrition_grades = models.CharField(max_length=1, blank=True, null=True)
-    created_at = models.DateTimeField(
-        default=timezone.now, blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, blank=True, null=True)
     substitute = models.ForeignKey(
@@ -17,3 +16,6 @@ class Foods(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('delete', kwargs={'pk': self.pk})

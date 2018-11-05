@@ -1,0 +1,26 @@
+{% extends 'foods/base.html' %}
+{% block content %}
+
+<header class="text-center">
+
+    <h1>Substitutes</h1>
+
+</header>
+<section>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <form method="POST">{% csrf_token %}
+                    <p class='text-center'>Etes-vous sûr que vous voulez supprimer <b>"{{ object }}"</b> ?</p>
+                    <div class="text-right">
+                        <button type="submit " class="btn btn-danger" value="Supprimer">Supprimer</button>
+                        <button onclick="window.history.back();" class="btn btn-secondary" type="button"> Annuler</button>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+</section>
+
+{% endblock %}

@@ -1,9 +1,8 @@
 <form action="{% url 'foods:search' %}" method="GET" accept-charset="utf-8">
-
-    <div class="input-group input-gorup-sm">
-        <input class="form-control" type="text" name="query">
+    <div class="input-group">
+        <input class="form-control" type="text" name="query" aria-label="search" aria-describedby="basic-addon2">
         <div class="input-group-append">
-            <button class='btn btn-primary'>Chercher</button>
+            <button class='btn btn-search btn-primary' type="submit">chercher</button>
         </div>
     </div>
 </form>

@@ -8,6 +8,13 @@
 
 </header>
 <section>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
     <div class="container">
         <div class="row">
             <div class="col-6 mx-auto">
@@ -19,7 +26,7 @@
                         {{ form|crispy }}
                     </fieldset>
                     <div class="form-group">
-                        <button class="btn" type="submit">Login</button>
+                        <button class="btn" type="submit">Se connecter</button>
                     </div>
                 </form>
                 <div class="border-top pt-3 text-right">

@@ -1,15 +1,25 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db import transaction
+from django.contrib.auth.decorators import login_required
+
+from django.views.generic.edit import DeleteView
+from django.urls import reverse_lazy
+
+
 import requests
 import json
+import copy
 
-from .models import Foods
 from django.contrib.auth.models import User
+from .models import Foods
 
 PROPERTIES = [
     'code',
     'product_name',
+    'brands',
+    'quantity',
+    'image_url',
     'image_small_url',
     'categories_hierarchy',
     'nutrition_grades'
@@ -24,24 +34,37 @@ def http_request(payload):
         data = req.json()
         context = {}
         if data['count'] > 0:
-            items = []
-            for product in data['products']:
-                item = {k: (product[k] if k in product else None)
-                        for k in PROPERTIES}
 
-                for k in item:
-                    if not item[k]:
-                        item[k] = "None"
-                if item['categories_hierarchy'] != "None":
-                    category = item['categories_hierarchy']
-                    item['categories_hierarchy'] = category[-1][3:]
-                items.append(item)
+            products = []
+            for item in data['products']:
+                product = {}
+                for key in PROPERTIES:
+
+                    try:
+                        if not item[key]:
+                            raise KeyError
+                    except KeyError:
+                        product[key] = "None"
+                    else:
+                        if key == 'categories_hierarchy':
+                            product[key] = item[key][-1][3:]
+                        elif key == 'brands':
+                            product[key] = item[key].split(',')[-1]
+                        else:
+                            product[key] = item[key]
+
+                products.append(product)
+
+                # item = (k: v if v else "None"
+                #         for k, v in {k: product[k] if k in product else None
+                #             for k in PROPERTIES}.items())
             context['products'] = sorted(
-                items, key=lambda data: data['nutrition_grades'])
+                products, key=lambda data: data['nutrition_grades'])
             context['status'] = 'ok'
+
             return context
         else:
-            context['status'] = "no results"
+            context['status'] = "Aucun produit n'a été trouvé."
 
             return context
     else:
@@ -76,7 +99,6 @@ def search(request):
 
 def subs(request, category, code):
 
-    context = {}
     products = request.session.get('data')
     products = json.loads(products)
     selected_item = [i for i in products['products'] if i['code'] == code]
@@ -94,12 +116,46 @@ def subs(request, category, code):
         'json': 1
     }
     # Get request for substitute products
+    context = http_request(sub_payload)
+    # Copy results to add to to the session dictionary.
+    data = copy.deepcopy(context)
 
-    data = http_request(sub_payload)
-    context = data
+    # Add item selected by user to context
+
     context['selected'] = selected_item[0]
 
+    if data['status'] == 'ok':
+        data['products'].append(selected_item[0])
+    else:
+        data['products'] = selected_item
+
+    request.session['detail'] = json.dumps(data)
+
+
     return render(request, 'foods/subs.html', context)
+
+
+def detail(request, code):
+    # Find the product selected by user from the session dictionary
+    data = request.session.get('detail')
+    data = json.loads(data)
+
+    product = [i for i in data['products'] if i['code'] == code]
+
+    context = {
+        "product": product[0]
+    }
+
+    return render(request, 'foods/detail.html', context)
+
+
+def mentions(request):
+    return render(request, 'foods/mentions.html')
+
+
+class FoodsDelete(DeleteView):
+    model = Foods
+    success_url = reverse_lazy('foods:myfoods')
 
 
 @transaction.atomic()
@@ -135,4 +191,15 @@ def save(request):
         sub.substitute = original
         sub.save()
 
-    return HttpResponse('ok')
+    return HttpResponse('Produit enregistré')
+
+
+@login_required
+def myfoods(request):
+    user = request.user
+    myfoods = user.foods_set.all().order_by('-created_at')
+
+    context = {
+        'myfoods': myfoods
+    }
+    return render(request, 'foods/myfoods.html', context)

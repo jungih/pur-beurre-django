@@ -1,0 +1,67 @@
+{% extends 'foods/base.html' %}
+{% block content %}
+
+<header class="text-center">
+
+    <h1>Mes Aliments</h1>
+
+</header>
+<section>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <p>
+                    <b>Ma liste d'alimentations:</b>
+                </p>
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr class="text-center">
+                            <th>Mes Aliments</th>
+                            <th>Substituts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for food in myfoods %}
+                        {% if food.foods_set.all %}
+                        <tr>
+                            <td>
+                                {{ food.name }}&nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' food.id %}"><i
+                                        class="fas fa-times"></i></a>
+
+
+                                </ul>
+                            </td>
+                            <td>
+                                <ol>
+                                    {% for sub in food.foods_set.all %}
+
+                                    <li>
+                                        {{ sub.name }}&nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' sub.id %}"><i
+                                                class="fas fa-times"></i></a>
+                                    </li>
+                                    {% endfor %}
+                                </ol>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(function () {
+
+        $(".product-id").on('click', function () {
+            var id = $(this).val();
+            alert(id);
+            $("form#delete").attr("action", ("/foods/delete/%d", id));
+        });
+
+    });
+</script>
+
+{% endblock %}

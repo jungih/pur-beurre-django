@@ -23,8 +23,8 @@ urlpatterns = [
     path('', foods_views.index, name='index'),
     path('register/', users_views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
-    path('myfoods/', users_views.myfood, name='myfoods'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='foods/index.html'), name='logout'),
     path('foods/', include('foods.urls', namespace='foods')),
+    path('users/', include('users.urls', namespace='users')),
     path('admin/', admin.site.urls),
 ]

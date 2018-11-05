@@ -3,7 +3,7 @@
 {% block content %}
 <header class="bg-primary py-5">
     <div class="text-center">
-        <h1>you have been logged out</h1>
+        <h1>Vous êtes déconnecté</h1>
     </div>
 
 </header>
@@ -11,11 +11,9 @@
     <div class="conent">
         <div class="row">
             <div class="col-8">
-                <div class="border-top pt-3">
-                    <small class="text-muted">Already have an account? <a href="{% url 'login' %}">Login Again</a>
-                    </small>
-                </div>
+                <a href="{% url 'login' %}">Se connecter</a>
             </div>
         </div>
+    </div>
 </section>
 {% endblock %}
