@@ -3,13 +3,13 @@
 {% load crispy_forms_tags%}
 <header class="text-center">
 
-    <h1>Bonjour, {{ user.username }} - {{user.email}}!</h1>
+    <h1>Bonjour, {{ user.username }} !</h1>
 
 </header>
 <section>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col col-lg-10">
+        <div class="row ">
+            <div class="col">
                 {% if messages %}
                 {% for message in messages %}
                 <div class="alert alert-{{ message.tags }}">
@@ -22,10 +22,11 @@
                 </p>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-8">
-
-                {% crispy form form.helper%}
+        <div class="row">
+            <div class="col mx-5 text-center">
+                <div class="d-inline-block">
+                    {% crispy form form.helper%}
+                </div>
 
 
             </div>

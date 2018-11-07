@@ -30,10 +30,9 @@ def account(request):
         form = EmailForm(request.POST, instance=user)
         if form.is_valid():
             email = form.cleaned_data.get('email')
-            email = email.lower()
             form.save()
             messages.success(
-                request, f'Merci d\'enresigtrer votre adress e-mail, {email}')
+                request, f'Merci d\'enresigtrer votre adresse e-mail, {email}')
             return redirect('users:account')
     else:
         form = EmailForm()

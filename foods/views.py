@@ -6,13 +6,14 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import DeleteView
 from django.urls import reverse_lazy
 
+from django.contrib.auth.models import User
+from .models import Foods
 
 import requests
 import json
 import copy
-
-from django.contrib.auth.models import User
-from .models import Foods
+import re
+from bs4 import BeautifulSoup
 
 PROPERTIES = [
     'code',
@@ -58,8 +59,7 @@ def http_request(payload):
                 # item = (k: v if v else "None"
                 #         for k, v in {k: product[k] if k in product else None
                 #             for k in PROPERTIES}.items())
-            context['products'] = sorted(
-                products, key=lambda data: data['nutrition_grades'])
+            context['products'] = products
             context['status'] = 'ok'
 
             return context
@@ -117,33 +117,38 @@ def subs(request, category, code):
     }
     # Get request for substitute products
     context = http_request(sub_payload)
-    # Copy results to add to to the session dictionary.
-    data = copy.deepcopy(context)
-
     # Add item selected by user to context
-
     context['selected'] = selected_item[0]
-
-    if data['status'] == 'ok':
-        data['products'].append(selected_item[0])
-    else:
-        data['products'] = selected_item
-
-    request.session['detail'] = json.dumps(data)
-
-
+    try:
+        context['products'] = sorted(
+            context['products'], key=lambda data: data['nutrition_grades'])
+    except:
+        pass
     return render(request, 'foods/subs.html', context)
 
 
 def detail(request, code):
-    # Find the product selected by user from the session dictionary
-    data = request.session.get('detail')
-    data = json.loads(data)
 
-    product = [i for i in data['products'] if i['code'] == code]
+    req = requests.get(f'https://fr.openfoodfacts.org/product/{code}/').text
+
+    def find_tag_from_string(string):
+
+        try:
+            soup = BeautifulSoup(req, 'lxml')
+            tag = soup.find(text=re.compile(string))
+            tag = tag.find_parent("div").contents
+            tag.pop(1)
+            return "".join([str(i) for i in tag])
+        except:
+            return 'Données non trouvées'
+
+    score = find_tag_from_string("NutriScore")
+    nutrient = find_tag_from_string("Repères")
 
     context = {
-        "product": product[0]
+        'score': score,
+        'nutrient': nutrient,
+        'code': code
     }
 
     return render(request, 'foods/detail.html', context)

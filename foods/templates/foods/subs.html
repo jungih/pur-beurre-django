@@ -2,48 +2,67 @@
 {% block content %}
 <header class="selected text-center" style="background-image:url({{ selected.image_url }});padding:0;">
     <div class='selected'>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-sm-6">
+                    <div class="border">
+                        {% if selected.nutrition_grades != "None" %}
+                        <div class="grade bg-{{ selected.nutrition_grades }}">
+                            <h1>{{ selected.nutrition_grades }}</h1>
+                        </div>
 
-        <a href="{% url 'foods:detail' selected.code %}">
-            <img class="img-thumbnail" src="{{ selected.image_small_url }}">
-            <h4>{{ selected.product_name }} - {{ selected.nutrition_grades }}</h4>
-            {{ selected|json_script:"selected" }}
-        </a>
-
+                        {% endif %}
+                        <a href="{% url 'foods:detail' selected.code %}">
+                            <img class="border p-1 bg-white" src="{{ selected.image_small_url }}">
+                    </div>
+                    <h4>{{ selected.product_name }}</h4>
+                    </a>
+                    {{ selected|json_script:"selected" }}
+                </div>
+            </div>
+        </div>
     </div>
 </header>
 
 <section>
     <div class="container">
+        {% if status == "ok" %}
         <div class="row">
-            {% if status == "ok"%}
-            {% for sub in products%}
-            <div class="col-lg-4 col-md-6 col-sm-12 p-2 text-center">
-                <div class="d-flex flex-column h-100">
-                    <div class="">
-                        <a href="{% url 'foods:detail' sub.code %}">
-                            <img class="img-fluid rounded" src="{{ sub.image_small_url }}">
-                    </div>
-                    <div class="align-self-center">
-                        <span class='name'>{{ sub.product_name }} - {{ sub.nutrition_grades }}</span>
-                        </a>
-                    </div>
-                    <div>
-                        {% if user.is_authenticated %}
-                        <button class="save" value="{{ sub.code }}">enregistrer</button>
-                        {{ sub|json_script:sub.code }}
+            {% for sub in products %}
+            <div class="col-lg-4 col-md-6 col-sm-12 text-center border d-flex flex-column">
+                <div>
+                    <div class="image-border">
+                        {% if sub.nutrition_grades != "None" %}
+                        <div class="grade bg-{{ sub.nutrition_grades }}">
+                            <h1 class="grade">{{ sub.nutrition_grades }}</h1>
+                        </div>
+
+
                         {% endif %}
+                        <a href="{% url 'foods:detail' sub.code %}">
+                            <span class="helper"></span><img src="{{ sub.image_small_url }}" class="image" alt="{{ sub.product_name }}">
                     </div>
                 </div>
+                <div class="pt-2">
+                    <p class="name"><b> {{ sub.product_name }}</b><br>
+                        {% if sub.brands != "None" %}
+                        {{ sub.brands }}
+                        {% endif %}
+                        {% if sub.quantity != "None" %}
+                        {{ sub.quantity}}
+                        {% endif %}
+                    </p></a>
+                </div>
+                <div class='mt-auto pb-2'><button class="save btn" value="{{ sub.code }}">Enregistrer</button></div>
+                {{ sub|json_script:sub.code }}
             </div>
             {% endfor %}
-            {% else %}
-            <div class="col">
-                <h1 class="text-center text-uppercase">{{ status }}</h1>
-            </div>
-            {% endif %}
         </div>
+    </div> {% else %} <div class="col text-center">
+        <h1 class="text-uppercase">{{ status }}</h1>
+    </div>
+    {% endif %}
     </div>
 
 </section>
-
 {% endblock %}

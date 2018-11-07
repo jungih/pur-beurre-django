@@ -12,6 +12,7 @@ class EmailForm(ModelForm):
         self.fields['email'].required = True
         self.helper = FormHelper()
         self.helper.form_class = 'form-inline'
+
         self.helper.form_method = 'post'
         self.helper.form_action = 'users:account'
         # self.helper.label_class = ''

@@ -4,8 +4,9 @@
     <div class="container d-flex frex-row">
 
         <div class="mr-auto">
-            <a class="navbar-brand js-scroll-trigger" href="{% url 'index' %}#page-top"><img class="logo" src="{% static 'foods/img/logo.png' %}"
-                    alt="Pur Beurre">&nbsp;Pur Beurre</a>
+            <a class="navbar-brand js-scroll-trigger" href="{% url 'index' %}#page-top"><img class="logo d-inline-block"
+                    src="{% static 'foods/img/logo.png' %}" alt="Pur Beurre"><span class="align-middle">&nbsp;Pur
+                    Beurre</span></a>
         </div>
         <div class="pr-2">
             <form action="{% url 'foods:search' %}" method="GET" accept-charset="utf-8">

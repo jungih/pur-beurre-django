@@ -49,9 +49,9 @@ $(function () {
     });
 
 
-    $(".name").each(function () {
-        $(this).text($(this).text().replace(new RegExp(" - None", "g"), ""));
-    });
+    // $(".name").each(function () {
+    //     $(this).text($(this).text().replace(new RegExp("None", "g"), ""));
+    // });
 
 
 

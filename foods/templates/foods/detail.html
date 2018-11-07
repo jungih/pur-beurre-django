@@ -1,19 +1,43 @@
 {% extends 'foods/base.html' %}
 {% block content %}
-<header class="selected text-center" style='background-image:url({{ product.image_url }});padding:0;'>
+<header class="text-center" style="background-image:url({{ product.image_url }});padding:0;">
     <div class='selected'>
-        <img class="img-thumbnail" src="{{ product.image_small_url }}">
-        <h4>{{ product.product_name }} - {{ product.nutrition_grades }}</h4>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-6">
 
+
+                </div>
+            </div>
+        </div>
     </div>
-
 </header>
 
 <section>
     <div class="container">
+
         <div class="row">
-            nothing here yet
+            <div class="col-md-6">
+                <h4>Note nutritionnelle de couleur NutriScore</h4>
+                {{score|safe}}
+            </div>
+            <div class="col-md-6">
+                <h4 class="mb-4">Repères nutritionnels pour 100 g</h4>
+                {{nutrient|safe}}
+            </div>
         </div>
+        <div class="row">
+            <div class="col text-center">
+                <a href="http://fr.openfoodfacts.org/produit/{{ code }}">
+                    <button class="btn btn-primary">
+                        Voir la fiche d'OpenFoodFacts
+                    </button>
+                </a>
+
+            </div>
+        </div>
+
+
 
 </section>
 
