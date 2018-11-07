@@ -169,6 +169,7 @@ def save(request):
         name = item['product_name']
         code = item['code']
         image_url = item['image_small_url']
+        grade = item['nutrition_grades']
 
         product = Foods.objects.filter(code=code)
 
@@ -177,6 +178,7 @@ def save(request):
                 code=code,
                 name=name,
                 image_url=image_url,
+                nutrition_grades=grade
 
             )
 

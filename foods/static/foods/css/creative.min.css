@@ -309,6 +309,10 @@ section {
     color: #DE9440 !important
 }
 
+.btn {
+    border: none
+}
+
 .btn-loupe {
     background-color: #fff;
     border: 1px solid lightgray;
@@ -416,4 +420,23 @@ div.grade>h1 {
 i.check {
     color: #038141;
     font-size: 30px
+}
+
+a.delete {
+    color: rgb(162, 19, 0);
+}
+
+a.delete:hover,
+a.delete:focus {
+    color: rgb(162, 19, 0);
+
+}
+
+a.myfood-link {
+    color: #000;
+}
+
+a.myfood-link:hover,
+a.myfood-link:focus {
+    color: #000;
 }

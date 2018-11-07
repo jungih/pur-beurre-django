@@ -24,7 +24,16 @@
                 {% if food.foods_set.all %}
                 <tr>
                     <td>
-                        {{ food.name }}&nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' food.id %}"><i class="fas fa-times"></i></a>
+                        <a href="{% url 'foods:detail' food.code %}" class='myfood-link'>
+                            {{ food.name }}
+                        </a>
+                        {% if food.nutrition_grades != "None" %}
+                        - {{food.nutrition_grades|upper}}
+
+
+
+                        {% endif %}
+                        &nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' food.id %}"><i class="fas fa-times"></i></a>
 
 
                         </ul>
@@ -34,7 +43,10 @@
                             {% for sub in food.foods_set.all %}
 
                             <li>
-                                {{ sub.name }}&nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' sub.id %}"><i
+                                <a href="{% url 'foods:detail' food.code %}" class='myfood-link'>
+                                    {{ sub.name }}
+                                </a>
+                                - {{sub.nutrition_grades|upper}}&nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' sub.id %}"><i
                                         class="fas fa-times"></i></a>
                             </li>
                             {% endfor %}
