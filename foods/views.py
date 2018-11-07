@@ -23,7 +23,8 @@ PROPERTIES = [
     'image_url',
     'image_small_url',
     'categories_hierarchy',
-    'nutrition_grades'
+    'nutrition_grades',
+
 
 ]
 
@@ -48,7 +49,7 @@ def http_request(payload):
                         product[key] = "None"
                     else:
                         if key == 'categories_hierarchy':
-                            product[key] = item[key][-1][3:]
+                            product[key] = item[key]
                         elif key == 'brands':
                             product[key] = item[key].split(',')[-1]
                         else:
@@ -60,6 +61,7 @@ def http_request(payload):
                 #         for k, v in {k: product[k] if k in product else None
                 #             for k in PROPERTIES}.items())
             context['products'] = products
+
             context['status'] = 'ok'
 
             return context
@@ -97,26 +99,31 @@ def search(request):
     return render(request, 'foods/search.html', context)
 
 
-def subs(request, category, code):
+def subs(request, code):
 
     products = request.session.get('data')
     products = json.loads(products)
     selected_item = [i for i in products['products'] if i['code'] == code]
+    print(selected_item[0]['categories_hierarchy'])
 
     # API fields for searching products with A nutrition grade in the same category
-    sub_payload = {
-        'search_simple': 1,
-        'action': 'process',
-        'tagtype_0': 'categories',
-        'tag_contains_0': 'contains',
-        'tag_0': category,
-        'nutriment_0': 'nutrition-score-fr',
-        'nutriment_compare_0': 'lt',
-        'nutriment_value_0': 11,
-        'json': 1
-    }
-    # Get request for substitute products
-    context = http_request(sub_payload)
+    for category in reversed(selected_item[0]['categories_hierarchy']):
+
+        sub_payload = {
+            'search_simple': 1,
+            'action': 'process',
+            'tagtype_0': 'categories',
+            'tag_contains_0': 'contains',
+            'tag_0': category[3:],
+            'nutriment_0': 'nutrition-score-fr',
+            'nutriment_compare_0': 'lt',
+            'nutriment_value_0': 11,
+            'json': 1
+        }
+        # Get request for substitute products
+        context = http_request(sub_payload)
+        if context['status'] == 'ok':
+            break
     # Add item selected by user to context
     context['selected'] = selected_item[0]
 
