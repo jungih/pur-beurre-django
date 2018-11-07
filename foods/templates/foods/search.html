@@ -21,26 +21,33 @@
         <div class="row">
             {% for product in products %}
             <div class="col-lg-4 col-md-6 col-sm-12 text-center">
-                <div class="image-border border">
+                <div class="image-border">
 
-                    {% if product.nutrition_grades != "None" %}
-                    <div class="grade bg-{{ sub.nutrition_grades }}">
-                        <h1>{{ product.nutrition_grades }}</h1>
+
+                    <span class="helper"></span>
+                    <div class="image">
+                        {% if product.nutrition_grades != "None" %}
+                        <div class="grade bg-{{ product.nutrition_grades }}">
+                            <h1>{{ product.nutrition_grades }}</h1>
+                        </div>
+
+                        {% endif %}
+                        <a href="{% url 'foods:subs' product.categories_hierarchy product.code %}">
+                            <img src="{{ product.image_small_url }}" alt="{{ product.product_name }}">
+                        </a>
                     </div>
-
-                    {% endif %}
-                    <a href="{% url 'foods:subs' product.categories_hierarchy product.code %}">
-                        <span class="helper"></span><img src="{{ product.image_small_url }}" class="image" alt="{{ product.product_name }}">
 
                 </div>
                 <div class="p-2">
-                    <p class="name"><b> {{ product.product_name }}</b><br>
-                        {% if product.brands != "None" %}
-                        {{ product.brands }}
-                        {% endif %}
-                        {% if product.quantity != "None" %}
-                        {{ product.quantity}}
-                        {% endif %}
+                    <p class="name">
+                        <a href="{% url 'foods:subs' product.categories_hierarchy product.code %}">
+                            <b> {{ product.product_name }}</b><br>
+                            {% if product.brands != "None" %}
+                            {{ product.brands }}
+                            {% endif %}
+                            {% if product.quantity != "None" %}
+                            {{ product.quantity}}
+                            {% endif %}
                     </p></a>
                 </div>
             </div> {% endfor %}

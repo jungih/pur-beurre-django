@@ -8,11 +8,11 @@
 </header>
 <section>
     <div class="container">
-        <div class="row ">
-            <div class="col">
+        <div class="row">
+            <div class="col text-center">
                 {% if messages %}
                 {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
+                <div class="d-inline-block w-50 alert alert-{{ message.tags }}">
                     {{ message }}
                 </div>
                 {% endfor %}

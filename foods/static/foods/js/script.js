@@ -43,10 +43,12 @@ $(function () {
             },
             success: () => {
                 $(this).hide();
+                $(this).parent().html('<i class = "check fas fa-check-circle" ></i>');
             }
 
-        })
+        });
     });
+
 
 
     // $(".name").each(function () {

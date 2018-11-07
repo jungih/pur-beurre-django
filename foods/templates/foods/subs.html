@@ -4,8 +4,8 @@
     <div class='selected'>
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-sm-6">
-                    <div class="border">
+                <div class="col-sm-6 text-center">
+                    <div class="image mb-2">
                         {% if selected.nutrition_grades != "None" %}
                         <div class="grade bg-{{ selected.nutrition_grades }}">
                             <h1>{{ selected.nutrition_grades }}</h1>
@@ -26,42 +26,50 @@
 
 <section>
     <div class="container">
-        {% if status == "ok" %}
         <div class="row">
+            {% if status == "ok" %}
             {% for sub in products %}
-            <div class="col-lg-4 col-md-6 col-sm-12 text-center border d-flex flex-column">
-                <div>
-                    <div class="image-border">
+            <div class="col-sm-12 col-md-6 col-lg-4 text-center d-flex flex-column">
+                <div class="image-border mb-2">
+                    <span class="helper"></span>
+                    <div class="image">
                         {% if sub.nutrition_grades != "None" %}
                         <div class="grade bg-{{ sub.nutrition_grades }}">
-                            <h1 class="grade">{{ sub.nutrition_grades }}</h1>
+                            <h1>{{ sub.nutrition_grades }}</h1>
                         </div>
 
-
                         {% endif %}
-                        <a href="{% url 'foods:detail' sub.code %}">
-                            <span class="helper"></span><img src="{{ sub.image_small_url }}" class="image" alt="{{ sub.product_name }}">
+                        <a href="{% url 'foods:subs' sub.categories_hierarchy sub.code %}">
+                            <img src="{{ sub.image_small_url }}" alt="{{ sub.product_name }}">
+                        </a>
                     </div>
                 </div>
-                <div class="pt-2">
-                    <p class="name"><b> {{ sub.product_name }}</b><br>
-                        {% if sub.brands != "None" %}
-                        {{ sub.brands }}
-                        {% endif %}
-                        {% if sub.quantity != "None" %}
-                        {{ sub.quantity}}
-                        {% endif %}
-                    </p></a>
+                <div>
+                    <p class="name">
+                        <a href="{% url 'foods:subs' sub.categories_hierarchy sub.code %}">
+                            <b> {{ sub.product_name }}</b><br>
+                            {% if sub.brands != "None" %}
+                            {{ sub.brands }}
+                            {% endif %}
+                            {% if sub.quantity != "None" %}
+                            {{ sub.quantity}}
+                            {% endif %}
+                        </a>
+                    </p>
                 </div>
-                <div class='mt-auto pb-2'><button class="save btn" value="{{ sub.code }}">Enregistrer</button></div>
-                {{ sub|json_script:sub.code }}
+
+                <div class='mt-auto mb-5 '>
+                    <button class="save btn" value="{{ sub.code }}"><i class="far fa-save"></i> Enregistrer</button>
+                    {{ sub|json_script:sub.code }}
+                </div>
             </div>
             {% endfor %}
+            {% else %}
+            <div class="text-center">
+                <h1 class="text-uppercase">{{ status }}</h1>
+            </div>
+            {% endif %}
         </div>
-    </div> {% else %} <div class="col text-center">
-        <h1 class="text-uppercase">{{ status }}</h1>
-    </div>
-    {% endif %}
     </div>
 
 </section>
