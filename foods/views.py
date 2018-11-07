@@ -119,6 +119,7 @@ def subs(request, category, code):
     context = http_request(sub_payload)
     # Add item selected by user to context
     context['selected'] = selected_item[0]
+
     try:
         context['products'] = sorted(
             context['products'], key=lambda data: data['nutrition_grades'])

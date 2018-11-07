@@ -39,14 +39,14 @@
                         </div>
 
                         {% endif %}
-                        <a href="{% url 'foods:subs' sub.categories_hierarchy sub.code %}">
+                        <a href="{% url 'foods:detail' sub.code %}">
                             <img src="{{ sub.image_small_url }}" alt="{{ sub.product_name }}">
                         </a>
                     </div>
                 </div>
                 <div>
                     <p class="name">
-                        <a href="{% url 'foods:subs' sub.categories_hierarchy sub.code %}">
+                        <a href="{% url 'foods:detail' sub.code %}">
                             <b> {{ sub.product_name }}</b><br>
                             {% if sub.brands != "None" %}
                             {{ sub.brands }}
