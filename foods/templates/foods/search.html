@@ -22,8 +22,6 @@
             {% for product in products %}
             <div class="col-lg-4 col-md-6 col-sm-12 text-center">
                 <div class="image-border">
-
-
                     <span class="helper"></span>
                     <div class="image">
                         {% if product.nutrition_grades != "None" %}
@@ -33,7 +31,7 @@
 
                         {% endif %}
                         <a href="{% url 'foods:subs' product.code %}">
-                            <img src="{{ product.image_small_url }}" alt="{{ product.product_name }}">
+                            <img src="{{ product.image_small_url }}" alt="Image de porudit">
                         </a>
                     </div>
 

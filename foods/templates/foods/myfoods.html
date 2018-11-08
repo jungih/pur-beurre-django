@@ -12,49 +12,55 @@
         <p>
             <b>Ma liste d'alimentations:</b>
         </p>
-        <table class="table">
+        <table class="table table-borderless">
             <thead class="thead-light">
                 <tr class="text-center">
-                    <th>Mes Aliments</th>
-                    <th>Substituts</th>
+                    <th colspan="2">Mes Aliments</th>
+                    <th colspan="2">Substituts</th>
                 </tr>
             </thead>
             <tbody>
                 {% for food in myfoods %}
                 {% if food.foods_set.all %}
-                <tr>
-                    <td>
+                <tr class="border-top">
+                    <td rowspan="{{ food.foods_set.all|length }}">
+                        {% if food.nutrition_grades != "None" %}
+                        <div class="circle bg-{{ food.nutrition_grades }}">
+                            {{food.nutrition_grades|upper}}
+                        </div>
+                        {% endif %}
+                    </td>
+                    <td rowspan="{{ food.foods_set.all|length }}">
                         <a href="{% url 'foods:detail' food.code %}" class='myfood-link'>
                             {{ food.name }}
                         </a>
-                        {% if food.nutrition_grades != "None" %}
-                        - {{food.nutrition_grades|upper}}
-
-
-
-                        {% endif %}
                         &nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' food.id %}"><i class="fas fa-times"></i></a>
+                    </td>
+                    {% for sub in food.foods_set.all %}
+                    <td>
+                        {% if sub.nutrition_grades != "None" %}
 
-
-                        </ul>
+                        <div class="circle bg-{{ sub.nutrition_grades }} h-100">
+                            {{sub.nutrition_grades|upper}}
+                        </div>
+                        {% endif %}
                     </td>
                     <td>
-                        <ol>
-                            {% for sub in food.foods_set.all %}
+                        <div class='d-inline-block'>
+                            <a href="{% url 'foods:detail' food.code %}" class='myfood-link'>
+                                {{ sub.name }}
+                            </a> &nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' sub.id %}"><i class="fas fa-times"></i></a>
+                        </div>
 
-                            <li>
-                                <a href="{% url 'foods:detail' food.code %}" class='myfood-link'>
-                                    {{ sub.name }}
-                                </a>
-                                - {{sub.nutrition_grades|upper}}&nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' sub.id %}"><i
-                                        class="fas fa-times"></i></a>
-                            </li>
-                            {% endfor %}
-                        </ol>
                     </td>
                 </tr>
-                {% endif %}
+
                 {% endfor %}
+                {% else %}
+                <tr>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
             </tbody>
         </table>
 

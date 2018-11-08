@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup
 
 PROPERTIES = [
     'code',
-    'product_name',
+    'product_name_fr',
     'brands',
     'quantity',
     'image_url',
@@ -52,6 +52,8 @@ def http_request(payload):
                             product[key] = item[key]
                         elif key == 'brands':
                             product[key] = item[key].split(',')[-1]
+                        elif key=='product_name_fr':
+                            product['product_name'] = item[key]
                         else:
                             product[key] = item[key]
 
@@ -101,13 +103,15 @@ def search(request):
 
 def subs(request, code):
 
-    products = request.session.get('data')
-    products = json.loads(products)
-    selected_item = [i for i in products['products'] if i['code'] == code]
-    print(selected_item[0]['categories_hierarchy'])
+    data = request.session.get('data')
+    data = json.loads(data)
+    selected_item = {k: i[k]
+                     for i in data['products'] for k in i if i['code'] == code}
 
     # API fields for searching products with A nutrition grade in the same category
-    for category in reversed(selected_item[0]['categories_hierarchy']):
+    categories = selected_item['categories_hierarchy']
+
+    for category in reversed(categories):
 
         sub_payload = {
             'search_simple': 1,
@@ -117,46 +121,69 @@ def subs(request, code):
             'tag_0': category[3:],
             'nutriment_0': 'nutrition-score-fr',
             'nutriment_compare_0': 'lt',
-            'nutriment_value_0': 11,
+            'nutriment_value_0': 3,
             'json': 1
         }
         # Get request for substitute products
         context = http_request(sub_payload)
         if context['status'] == 'ok':
+
             break
     # Add item selected by user to context
-    context['selected'] = selected_item[0]
+    data = copy.deepcopy(context)
+    context['selected'] = selected_item
 
     try:
         context['products'] = sorted(
             context['products'], key=lambda data: data['nutrition_grades'])
     except:
         pass
+
+    data['products'].append(selected_item)
+    request.session['products'] = data['products']
     return render(request, 'foods/subs.html', context)
 
 
 def detail(request, code):
 
     req = requests.get(f'https://fr.openfoodfacts.org/product/{code}/').text
+    soup = BeautifulSoup(req, 'lxml')
 
-    def find_tag_from_string(string):
+    def get_div(string):
 
         try:
-            soup = BeautifulSoup(req, 'lxml')
-            tag = soup.find(text=re.compile(string))
+            tag = soup.find(string=re.compile(string))
             tag = tag.find_parent("div").contents
             tag.pop(1)
             return "".join([str(i) for i in tag])
         except:
-            return 'Données non trouvées'
+            return 'Les données non présentes'
 
-    score = find_tag_from_string("NutriScore")
-    nutrient = find_tag_from_string("Repères")
+    def get_img(string):
+        try:
+            tag = soup.find('img', class_=string)
+            image = tag['data-src']
+            return image
+        except:
+            return None
+    def get_name():
+        try:
+            tag = soup.find('h1')
+            name = tag.string
+            return name
+        except:
+            return None
 
+    score = get_div("NutriScore")
+    nutrient = get_div("Repères")
+    image_url = get_img("show-for-xlarge-up")
+    name = get_name()
     context = {
         'score': score,
         'nutrient': nutrient,
-        'code': code
+        'code': code,
+        'image_url': image_url,
+        'name': name
     }
 
     return render(request, 'foods/detail.html', context)
@@ -173,35 +200,34 @@ class FoodsDelete(DeleteView):
 
 @transaction.atomic()
 def save(request):
-    def check_db(item):
-        name = item['product_name']
-        code = item['code']
-        image_url = item['image_small_url']
-        grade = item['nutrition_grades']
 
-        product = Foods.objects.filter(code=code)
+    def add_db(item):
+        food = Foods.objects.create(
+             code=item['code'],
+             name=item['product_name'],
+             image_url=item['image_small_url'],
+             nutrition_grades=item['nutrition_grades']
+       )
 
-        if not product.exists():
-            Foods.objects.create(
-                code=code,
-                name=name,
-                image_url=image_url,
-                nutrition_grades=grade
+        return food
 
-            )
-
-        return Foods.objects.get(code=item['code'])
 
     if request.method == 'POST':
         sub_data = json.loads(request.POST['sub'])
+        print("sub_data: ", sub_data)
         product_data = json.loads(request.POST['product'])
 
-        original = check_db(product_data)
+        product = Foods.objects.filter(code=product_data['code'])
+
+        if not product.exists():
+            original = add_db(product_data)
+        else:
+            original = product.first()
         current_user = request.user
         original.author = current_user
         original.save()
 
-        sub = check_db(sub_data)
+        sub = add_db(sub_data)
 
         sub.substitute = original
         sub.save()

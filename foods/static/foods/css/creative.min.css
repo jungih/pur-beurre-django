@@ -374,6 +374,11 @@ div.image {
 
 }
 
+.product-image {
+    max-height: 300px;
+    max-width: 300px;
+}
+
 div.grade {
     position: absolute;
     display: inline-block;
@@ -439,4 +444,16 @@ a.myfood-link {
 a.myfood-link:hover,
 a.myfood-link:focus {
     color: #000;
+}
+
+.circle {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    text-align: center;
+    /* vertical-align: middle; */
+    line-height: none;
+    color: white;
+    font-family: 'Open Sans', Arial, sans-serif
 }

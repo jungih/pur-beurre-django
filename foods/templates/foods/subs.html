@@ -5,7 +5,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-sm-6 text-center">
-                    <div class="image mb-2">
+                    <div class="image mb-3">
                         {% if selected.nutrition_grades != "None" %}
                         <div class="grade bg-{{ selected.nutrition_grades }}">
                             <h1>{{ selected.nutrition_grades }}</h1>
@@ -15,7 +15,15 @@
                         <a href="{% url 'foods:detail' selected.code %}">
                             <img class="border p-1 bg-white" src="{{ selected.image_small_url }}">
                     </div>
-                    <h4>{{ selected.product_name }}</h4>
+                    <h4><a href="{% url 'foods:detail' selected.code %}">
+                            <b> {{ selected.product_name }}</b><br>
+                            {% if selected.brands != "None" %}
+                            {{ selected.brands }}
+                            {% endif %}
+                            {% if selected.quantity != "None" %}
+                            {{ selected.quantity}}
+                            {% endif %}
+                        </a></h4>
                     </a>
                     {{ selected|json_script:"selected" }}
                 </div>
@@ -30,7 +38,7 @@
             {% if status == "ok" %}
             {% for sub in products %}
             <div class="col-sm-12 col-md-6 col-lg-4 text-center d-flex flex-column">
-                <div class="image-border mb-2">
+                <div class="image-border">
                     <span class="helper"></span>
                     <div class="image">
                         {% if sub.nutrition_grades != "None" %}
@@ -40,7 +48,7 @@
 
                         {% endif %}
                         <a href="{% url 'foods:detail' sub.code %}">
-                            <img src="{{ sub.image_small_url }}" alt="{{ sub.product_name }}">
+                            <img src="{{ sub.image_small_url }}" alt="Image de produit">
                         </a>
                     </div>
                 </div>

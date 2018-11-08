@@ -1,12 +1,12 @@
 {% extends 'foods/base.html' %}
 {% block content %}
-<header class="text-center" style="background-image:url({{ product.image_url }});padding:0;">
+<header class="text-center" style="background-image:url({{ image_url }});padding:0;">
     <div class='selected'>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-6">
-
-
+                    <img class="p-1 bg-white product-image" src="{{ image_url }}" alt="Image prouduit">
+                    <h4 class="mt-3">{{name}}</h4>
                 </div>
             </div>
         </div>
