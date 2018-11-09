@@ -15,14 +15,10 @@
                         <a href="{% url 'foods:detail' selected.code %}">
                             <img class="border p-1 bg-white" src="{{ selected.image_small_url }}">
                     </div>
-                    <h4><a href="{% url 'foods:detail' selected.code %}">
+                    <h4><a class="product-title" href="{% url 'foods:detail' selected.code %}">
                             <b> {{ selected.product_name }}</b><br>
-                            {% if selected.brands != "None" %}
-                            {{ selected.brands }}
-                            {% endif %}
-                            {% if selected.quantity != "None" %}
-                            {{ selected.quantity}}
-                            {% endif %}
+                            {{ selected.brands }} {{ selected.quantity}}
+
                         </a></h4>
                     </a>
                     {{ selected|json_script:"selected" }}
@@ -54,22 +50,18 @@
                 </div>
                 <div>
                     <p class="name">
-                        <a href="{% url 'foods:detail' sub.code %}">
+                        <a class="product-title" href="{% url 'foods:detail' sub.code %}">
                             <b> {{ sub.product_name }}</b><br>
-                            {% if sub.brands != "None" %}
-                            {{ sub.brands }}
-                            {% endif %}
-                            {% if sub.quantity != "None" %}
-                            {{ sub.quantity}}
-                            {% endif %}
+                            {{ sub.brands }} {{ sub.quantity}}
                         </a>
                     </p>
                 </div>
-
+                {% if user.is_authenticated %}
                 <div class='mt-auto mb-5 '>
                     <button class="save btn" value="{{ sub.code }}"><i class="far fa-save"></i> Enregistrer</button>
                     {{ sub|json_script:sub.code }}
                 </div>
+                {% endif %}
             </div>
             {% endfor %}
             {% else %}

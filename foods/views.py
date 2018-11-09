@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.db import transaction
+from django.http import HttpResponse, Http404
+from django.db import transaction, IntegrityError
 from django.contrib.auth.decorators import login_required
-
+from django.contrib import messages
 from django.views.generic.edit import DeleteView
 from django.urls import reverse_lazy
 
@@ -52,7 +52,7 @@ def http_request(payload):
                             product[key] = item[key]
                         elif key == 'brands':
                             product[key] = item[key].split(',')[-1]
-                        elif key=='product_name_fr':
+                        elif key == 'product_name_fr':
                             product['product_name'] = item[key]
                         else:
                             product[key] = item[key]
@@ -105,12 +105,14 @@ def subs(request, code):
 
     data = request.session.get('data')
     data = json.loads(data)
-    selected_item = {k: i[k]
-                     for i in data['products'] for k in i if i['code'] == code}
+    selected_item = {k: i[k] for i in data['products']
+                     for k in i if i['code'] == code}
+    if not selected_item:
+        raise Http404()
 
-    # API fields for searching products with A nutrition grade in the same category
     categories = selected_item['categories_hierarchy']
 
+    # API fields for searching products with A nutrition grade in the same category
     for category in reversed(categories):
 
         sub_payload = {
@@ -121,7 +123,7 @@ def subs(request, code):
             'tag_0': category[3:],
             'nutriment_0': 'nutrition-score-fr',
             'nutriment_compare_0': 'lt',
-            'nutriment_value_0': 3,
+            'nutriment_value_0': 11,
             'json': 1
         }
         # Get request for substitute products
@@ -166,6 +168,7 @@ def detail(request, code):
             return image
         except:
             return None
+
     def get_name():
         try:
             tag = soup.find('h1')
@@ -203,36 +206,36 @@ def save(request):
 
     def add_db(item):
         food = Foods.objects.create(
-             code=item['code'],
-             name=item['product_name'],
-             image_url=item['image_small_url'],
-             nutrition_grades=item['nutrition_grades']
-       )
-
+            code=item['code'],
+            name=item['product_name'],
+            image_url=item['image_small_url'],
+            nutrition_grades=item['nutrition_grades'],
+            brands=item['brands'],
+            quantity=item['quantity'])
         return food
-
 
     if request.method == 'POST':
         sub_data = json.loads(request.POST['sub'])
-        print("sub_data: ", sub_data)
         product_data = json.loads(request.POST['product'])
+        try:
+            with transaction.atomic():
+                product = Foods.objects.filter(code=product_data['code'])
 
-        product = Foods.objects.filter(code=product_data['code'])
+                if not product.exists():
+                    original = add_db(product_data)
+                else:
+                    original = product.first()
+                current_user = request.user
+                original.author = current_user
+                original.save()
 
-        if not product.exists():
-            original = add_db(product_data)
-        else:
-            original = product.first()
-        current_user = request.user
-        original.author = current_user
-        original.save()
+                sub = add_db(sub_data)
 
-        sub = add_db(sub_data)
-
-        sub.substitute = original
-        sub.save()
-
-    return HttpResponse('Produit enregistré')
+                sub.substitute = original
+                sub.save()
+            return HttpResponse(status=201)
+        except IntegrityError:
+            return HttpResponse(status=500)
 
 
 @login_required

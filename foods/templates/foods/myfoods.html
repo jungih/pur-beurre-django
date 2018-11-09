@@ -31,8 +31,8 @@
                         {% endif %}
                     </td>
                     <td rowspan="{{ food.foods_set.all|length }}">
-                        <a href="{% url 'foods:detail' food.code %}" class='myfood-link'>
-                            {{ food.name }}
+                        <a class="product-title myfood-link" href="{% url 'foods:detail' food.code %}">
+                            <b>{{ food.name }}</b> {{ food.brands }} {{ food.quantity }}
                         </a>
                         &nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' food.id %}"><i class="fas fa-times"></i></a>
                     </td>
@@ -47,8 +47,8 @@
                     </td>
                     <td>
                         <div class='d-inline-block'>
-                            <a href="{% url 'foods:detail' food.code %}" class='myfood-link'>
-                                {{ sub.name }}
+                            <a href="{% url 'foods:detail' sub.code %}" class='myfood-link product-title'>
+                                <b>{{ sub.name }}</b> {{ sub.brands }} {{ sub.quantity }}
                             </a> &nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' sub.id %}"><i class="fas fa-times"></i></a>
                         </div>
 

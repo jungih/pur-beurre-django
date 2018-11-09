@@ -41,19 +41,29 @@ $(function () {
                 product: product,
                 sub: sub
             },
-            success: () => {
+            success: (data, textStatus, xhr) => {
+                if ($(".alert").length) {
+                    $(".alert").hide();
+                }
                 $(this).hide();
                 $(this).parent().html('<i class = "check fas fa-check-circle" ></i>');
+            },
+            error: () => {
+                var error = "Une erreur interne est apparue. Merci de recommencer votre requête."
+                if ($(".alert").length == 0) {
+                    $("section>div.container").prepend("<div class=\"alert alert-warning\">" + error + "</div>")
+                }
             }
+
 
         });
     });
 
 
 
-    // $(".name").each(function () {
-    //     $(this).text($(this).text().replace(new RegExp("None", "g"), ""));
-    // });
+    $(".product-title").each(function () {
+        $(this).html($(this).html().replace(new RegExp("None", "g"), ""));
+    });
 
 
 
