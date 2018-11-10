@@ -28,10 +28,10 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.environ.get('ENV') == 'PRODUCTION':
     DEBUG = False
-    ALLOWED_HOSTS = ['pur-beurre-django.herokuapp.com']
 else:
     DEBUG = True
-    ALLOWED_HOSTS = ['127.0.0.1']
+
+ALLOWED_HOSTS = ['pur-beurre-django.herokuapp.com']
 
 
 # Database
@@ -147,4 +147,5 @@ if os.environ.get('ENV') == 'PRODUCTION':
         os.path.join(BASE_DIR, 'static'),
     )
     # Activate Django-Heroku.
-    django_heroku.settings(locals())
+
+django_heroku.settings(locals())

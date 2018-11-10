@@ -235,7 +235,7 @@ def save(request):
                 sub.save()
             return HttpResponse(status=201)
         except IntegrityError:
-            return HttpResponse(status=500)
+            return HttpResponse(status=409)
 
 
 @login_required
