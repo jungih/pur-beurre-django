@@ -1,6 +1,6 @@
 {% extends 'foods/base.html' %}
 {% block content %}
-<header class="selected text-center" style="background-image:url({{ selected.image_url }});padding:0;">
+<header class="sub text-center" style="background-image:url({{ selected.image_url }});padding:0;">
     <div class='selected'>
         <div class="container">
             <div class="row justify-content-center">
@@ -16,16 +16,18 @@
                             <img class="border p-1 bg-white" src="{{ selected.image_small_url }}">
                     </div>
                     <h4><a class="product-title" href="{% url 'foods:detail' selected.code %}">
-                            <b> {{ selected.product_name }}</b><br>
+                            <b> {{ selected.product_name_fr }}</b><br>
                             {{ selected.brands }} {{ selected.quantity}}
-
-                        </a></h4>
-                    </a>
+                        </a>
+                    </h4>
                     {{ selected|json_script:"selected" }}
                 </div>
             </div>
         </div>
     </div>
+    {% if not user.is_authenticated %}
+    <p class='connect'><a href="{% url 'login' %}">Conntectez-vous</a> pour enregistrer vos aliments</p>
+    {% endif %}
 </header>
 
 <section>
@@ -51,7 +53,7 @@
                 <div>
                     <p class="name">
                         <a class="product-title" href="{% url 'foods:detail' sub.code %}">
-                            <b> {{ sub.product_name }}</b><br>
+                            <b> {{ sub.product_name_fr }}</b><br>
                             {{ sub.brands }} {{ sub.quantity}}
                         </a>
                     </p>

@@ -52,8 +52,6 @@ def http_request(payload):
                             product[key] = item[key]
                         elif key == 'brands':
                             product[key] = item[key].split(',')[-1]
-                        elif key == 'product_name_fr':
-                            product['product_name'] = item[key]
                         else:
                             product[key] = item[key]
 
@@ -203,11 +201,12 @@ class FoodsDelete(DeleteView):
 
 @transaction.atomic()
 def save(request):
+    current_user = request.user
 
     def add_db(item):
         food = Foods.objects.create(
             code=item['code'],
-            name=item['product_name'],
+            name=item['product_name_fr'],
             image_url=item['image_small_url'],
             nutrition_grades=item['nutrition_grades'],
             brands=item['brands'],
@@ -219,18 +218,15 @@ def save(request):
         product_data = json.loads(request.POST['product'])
         try:
             with transaction.atomic():
-                product = Foods.objects.filter(code=product_data['code'])
+                product = Foods.objects.filter(author=current_user, code=product_data['code'])
 
                 if not product.exists():
                     original = add_db(product_data)
                 else:
                     original = product.first()
-                current_user = request.user
                 original.author = current_user
                 original.save()
-
                 sub = add_db(sub_data)
-
                 sub.substitute = original
                 sub.save()
             return HttpResponse(status=201)

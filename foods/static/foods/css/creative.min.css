@@ -234,7 +234,7 @@ img.carrot {
     }
 }
 
-header {
+header.sub {
     color: #fff;
     background-image: url(../img/header1.jpg);
     background-position: center 30%;
@@ -242,6 +242,16 @@ header {
     height: 100%;
     padding-top: 8rem;
     padding-bottom: 4rem;
+    position: relative;
+}
+
+
+header.sub p {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    margin-left: -160px;
+    font-weight: bold;
 }
 
 div.selected {
@@ -263,9 +273,6 @@ header.masthead hr {
     margin-bottom: 30px
 }
 
-header h1 {
-    font-size: 2rem
-}
 
 header.masthead p {
     font-weight: bold;

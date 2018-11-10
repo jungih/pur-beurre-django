@@ -1,9 +1,9 @@
 {% extends "foods/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<header class="bg-primary py-5">
+<header class="sub">
     <div class="text-center">
-        <h1>register now</h1>
+        <h1 class="text-uppercase">Identifiez-Vous</h1>
     </div>
 
 </header>
@@ -22,7 +22,7 @@
 
                     {% csrf_token %}
                     <fieldset class="form-gorup">
-                        <legend class="border-bottom">Login</legend>
+                        <legend class="border-bottom">S'identifier</legend>
                         {{ form|crispy }}
                     </fieldset>
                     <div class="form-group">
@@ -30,7 +30,7 @@
                     </div>
                 </form>
                 <div class="border-top pt-3 text-right">
-                    <a href="{% url 'register' %}">Créer votre compte</a>
+                    <a href="{% url 'register' %}">Créer un compte</a>
                 </div>
             </div>
         </div>
