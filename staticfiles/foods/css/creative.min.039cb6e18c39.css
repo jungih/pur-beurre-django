@@ -236,7 +236,7 @@ img.carrot {
 
 header.sub {
     color: #fff;
-    background-image: url(../img/header1.jpg);
+    background-image: url("../img/header1.0175f7bf51a2.jpg");
     background-position: center 30%;
     background-size: cover;
     height: 100%;
@@ -263,7 +263,7 @@ div.selected {
 
 header.masthead {
     padding-top: 10rem;
-    background-image: url(../img/header.jpg);
+    background-image: url("../img/header.797e95ade252.jpg");
     background-position: center center;
     background-size: cover
 }
