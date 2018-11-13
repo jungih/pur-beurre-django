@@ -13,3 +13,8 @@ class RegistrerView(TestCase):
     def test_register(self):
         response = self.client.get(reverse('register'))
         self.assertEqual(response.status_code, 200)
+
+    def test_register_page_error(self):
+        response = self.client.post(
+            reverse('register'), {"username": "test", "passward": "test4321"})
+        self.assertFormError(errors)
