@@ -32,9 +32,9 @@ PROPERTIES = [
 def http_request(payload):
     url = 'https://fr.openfoodfacts.org/cgi/search.pl'
     req = requests.get(url, params=payload)
-    if req.status_code >= 200 and req.status_code <= 400:
+    context = {}
+    if req.ok:
         data = req.json()
-        context = {}
         if data['count'] > 0:
 
             products = []
@@ -63,11 +63,9 @@ def http_request(payload):
             context['products'] = products
 
             context['status'] = 'ok'
-
             return context
         else:
             context['status'] = "Aucun produit n'a été trouvé."
-
             return context
     else:
         context['status'] = f'Error: {req.status_code}'
@@ -110,27 +108,29 @@ def subs(request, code):
 
     categories = selected_item['categories_hierarchy']
 
-    # API fields for searching products with A nutrition grade in the same category
-    for category in reversed(categories):
-
-        sub_payload = {
-            'search_simple': 1,
-            'action': 'process',
-            'tagtype_0': 'categories',
-            'tag_contains_0': 'contains',
-            'tag_0': category[3:],
-            'nutriment_0': 'nutrition-score-fr',
-            'nutriment_compare_0': 'lt',
-            'nutriment_value_0': 11,
-            'json': 1
-        }
-        # Get request for substitute products
-        context = http_request(sub_payload)
-        if context['status'] == 'ok':
-
-            break
+    if categories != "None":  # Check if there are categories.
+        for category in reversed(categories):
+            category = category[3:]
+            # API fields for searching products with A nutrition grade in the same category
+            sub_payload = {
+                'search_simple': 1,
+                'action': 'process',
+                'tagtype_0': 'categories',
+                'tag_contains_0': 'contains',
+                'tag_0': category,
+                'nutriment_0': 'nutrition-score-fr',
+                'nutriment_compare_0': 'lt',
+                'nutriment_value_0': 11,
+                'json': 1
+            }
+            # Get request for substitute products
+            context = http_request(sub_payload)
+            if context['status'] == 'ok':
+                break
+    else:
+        context = {'status': "Aucun produit n'a été trouvé."}
     # Add item selected by user to context
-    data = copy.deepcopy(context)
+    # data = copy.deepcopy(context)
     context['selected'] = selected_item
 
     try:
@@ -139,46 +139,56 @@ def subs(request, code):
     except:
         pass
 
-    data['products'].append(selected_item)
-    request.session['products'] = data['products']
+    # data['products'].append(selected_item)
+    # request.session['products'] = data['products']
     return render(request, 'foods/subs.html', context)
 
 
-def detail(request, code):
+class Scrap:
+    """Scrap html code from openfoodfacts.org using
+    BeutifulSoup4
+    """
 
-    req = requests.get(f'https://fr.openfoodfacts.org/product/{code}/').text
-    soup = BeautifulSoup(req, 'lxml')
+    def __init__(self, code):
+        req = requests.get(
+            f'https://fr.openfoodfacts.org/product/{code}/').text
+        self.soup = BeautifulSoup(req, 'lxml')
 
-    def get_div(string):
+    def get_div(self, string):
+        self.string = string
 
         try:
-            tag = soup.find(string=re.compile(string))
+            tag = self.soup.find(string=re.compile(self.string))
             tag = tag.find_parent("div").contents
             tag.pop(1)
             return "".join([str(i) for i in tag])
         except:
             return 'Les données non présentes'
 
-    def get_img(string):
+    def get_img(self, string):
+        self.string = string
         try:
-            tag = soup.find('img', class_=string)
+            tag = self.soup.find('img', class_=self.string)
             image = tag['data-src']
             return image
         except:
             return None
 
-    def get_name():
+    def get_name(self):
         try:
-            tag = soup.find('h1')
+            tag = self.soup.find('h1')
             name = tag.string
             return name
         except:
             return None
 
-    score = get_div("NutriScore")
-    nutrient = get_div("Repères")
-    image_url = get_img("show-for-xlarge-up")
-    name = get_name()
+
+def detail(request, code):
+    s = Scrap(code)
+    score = s.get_div("NutriScore")
+    nutrient = s.get_div("Repères")
+    image_url = s.get_img("show-for-xlarge-up")
+    name = s.get_name()
     context = {
         'score': score,
         'nutrient': nutrient,
@@ -218,7 +228,8 @@ def save(request):
         product_data = json.loads(request.POST['product'])
         try:
             with transaction.atomic():
-                product = Foods.objects.filter(author=current_user, code=product_data['code'])
+                product = Foods.objects.filter(
+                    author=current_user, code=product_data['code'])
 
                 if not product.exists():
                     original = add_db(product_data)

@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_nose',
 ]
 
 MIDDLEWARE = [
@@ -130,11 +131,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
+STATIC_URL = '/static/'
 
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
-STATIC_URL = '/static/'
 
 
 if os.environ.get('ENV') == 'PRODUCTION':

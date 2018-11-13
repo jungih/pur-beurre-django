@@ -263,6 +263,7 @@ div.selected {
 
 header.masthead {
     padding-top: 10rem;
+    padding-bottom: 5rem;
     background-image: url(../img/header.jpg);
     background-position: center center;
     background-size: cover
