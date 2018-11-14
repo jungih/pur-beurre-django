@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 
-class ViewsTest(TestCase):
+class TestIndex(TestCase):
     """Index view test"""
 
     def test_index_page(self):
@@ -76,7 +76,7 @@ class SearchViewTest(unittest.TestCase):
 
 
 @patch('foods.views.requests.get')
-class SubViewTest(unittest.TestCase):
+class TestSubView(unittest.TestCase):
     """Test Sub View3"""
 
     def setUp(self):
@@ -86,7 +86,11 @@ class SubViewTest(unittest.TestCase):
         # Create a dummy session
         session = self.client.session
         data = {"products": [
-            {"code": self.code, "categories_hierarchy": "None"}]}
+            {"code": self.code,
+             "categories_hierarchy": ["fr: category_1"],
+             "brands": "no_brand"
+             }],
+            "status": "ok"}
         session['data'] = json.dumps(data)
         session.save()
 
@@ -110,38 +114,31 @@ class SubViewTest(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class DetailView(unittest.TestCase):
-
-    @patch('foods.views.Scrap')
-    def test_context(self, mock_scrap):
+@patch('foods.views.requests.get')
+class TestDetailView(unittest.TestCase):
+    def test_context(self, mock_requests):
         """Test context values and status_code"""
 
         c = Client()
-        mock_scrap.return_value.get_div.return_value = "div"
-        mock_scrap.return_value.get_img.return_value = "img"
-        mock_scrap.return_value.get_name.return_value = "name"
+        mock_requests.return_value.text = "Hello world"
 
         response = c.get(reverse('foods:detail', args=['product_code']))
 
-        self.assertEqual(response.context['score'], "div")
-        self.assertEqual(response.context['nutrient'], "div")
-        self.assertEqual(response.context['image_url'], "img")
-        self.assertEqual(response.context['name'], "name")
+        self.assertEqual(
+            response.context['score'], 'Les données non présentes')
+        self.assertEqual(
+            response.context['nutrient'], 'Les données non présentes')
+        self.assertFalse(response.context['image_url'])
+        self.assertFalse(response.context['name'])
         self.assertEqual(response.context['code'], "product_code")
 
         self.assertEqual(response.status_code, 200)
 
 
-class PagesWithLogin(TestCase):
+class TestLogin(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='test', password='12345')
         self.client.login(username='test', password='12345')
-
-    def test_email_update(self):
-        """Test if account view redirects page after updating user's e-mail"""
-        response = self.client.post(reverse('users:account'), {
-                                    'email': 'abc@abc.com'})
-        self.assertRedirects(response, reverse('users:account'))
 
     def test_save_post(self):
         """test a success post"""
@@ -160,8 +157,8 @@ class PagesWithLogin(TestCase):
 
         self.assertEqual(response.status_code, 201)
 
-    def Test_myfoods_view(self):
+    def test_myfoods_view(self):
 
         response = self.client.get(reverse('foods:myfoods'))
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.context['myfoods'])
+        self.assertFalse(response.context['myfoods'])

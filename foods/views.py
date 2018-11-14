@@ -48,9 +48,7 @@ def http_request(payload):
                     except KeyError:
                         product[key] = "None"
                     else:
-                        if key == 'categories_hierarchy':
-                            product[key] = item[key]
-                        elif key == 'brands':
+                        if key == 'brands':
                             product[key] = item[key].split(',')[-1]
                         else:
                             product[key] = item[key]
@@ -85,8 +83,7 @@ def search(request):
         product_payload = {
             'search_terms': query,
             'search_simple': 1,
-            'json': 1,
-
+            'json': 1
         }
 
         # Get request
