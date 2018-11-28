@@ -26,5 +26,5 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='foods/index.html'), name='logout'),
     path('foods/', include('foods.urls', namespace='foods')),
     path('users/', include('users.urls', namespace='users')),
-    path('admin/', admin.site.urls),
+    path('ad-login/', admin.site.urls),
 ]
