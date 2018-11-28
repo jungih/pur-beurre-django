@@ -60,14 +60,14 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-# htmlcov/
+htmlcov/
 .tox/
 .coverage
 .coveragerc
 .cache
 nosetests.xml
 coverage.xml
-
+/tests/
 # Translations
 *.mo
 *.pot
@@ -89,3 +89,5 @@ local_settings.py
 .env
 db.sqlite3
 .vscode
+
+documents/
