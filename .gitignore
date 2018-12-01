@@ -91,3 +91,6 @@ db.sqlite3
 .vscode
 
 documents/
+
+# CSV files
+csv/*
