@@ -5,7 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.generic.edit import DeleteView
 from django.urls import reverse_lazy
-
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.contrib.postgres.search import SearchVector, SearchRank, SearchQuery
+from django.db.models import Q
 from django.contrib.auth.models import User
 from .models import Foods
 
@@ -21,7 +23,6 @@ PROPERTIES = [
     'brands',
     'quantity',
     'image_url',
-    'image_small_url',
     'categories_hierarchy',
     'nutrition_grades',
 
@@ -76,68 +77,34 @@ def index(request):
 
 def search(request):
 
+    context = {}
     # Search products
     if request.method == 'GET':
         query = request.GET.get('query')
-        # API field for search query.
-        product_payload = {
-            'search_terms': query,
-            'search_simple': 1,
-            'json': 1
-        }
-
-        # Get request
-        context = http_request(product_payload)
-
-        request.session['data'] = json.dumps(context)
+        # search products from DB
+        if query:
+            products_list = Foods.objects.filter(
+                product_name__icontains=query).order_by('id')
+        if products_list:
+            paginator = Paginator(products_list, 6)  # Show 6 products perpage
+            page = request.GET.get('page')
+            products = paginator.get_page(page)
+            context['products'] = products
+            context['query'] = query
+            context['status'] = 'ok'
+        else:
+            context['status'] = "Aucun produit n'a été trouvé."
 
     return render(request, 'foods/search.html', context)
 
 
 def subs(request, code):
 
-    data = request.session.get('data')
-    data = json.loads(data)
-    selected_item = {k: i[k] for i in data['products']
-                     for k in i if i['code'] == code}
-    if not selected_item:
-        raise Http404()
+    # search substitutes from foods
+    # get a querySet and loop thorugh categories
 
-    categories = selected_item['categories_hierarchy']
+    context = {'status': "Aucun produit n'a été trouvé."}
 
-    if categories != "None":  # Check if there are categories.
-        for category in reversed(categories):
-            category = category[3:]
-            # API fields for searching products with A nutrition grade in the same category
-            sub_payload = {
-                'search_simple': 1,
-                'action': 'process',
-                'tagtype_0': 'categories',
-                'tag_contains_0': 'contains',
-                'tag_0': category,
-                'nutriment_0': 'nutrition-score-fr',
-                'nutriment_compare_0': 'lt',
-                'nutriment_value_0': 11,
-                'json': 1
-            }
-            # Get request for substitute products
-            context = http_request(sub_payload)
-            if context['status'] == 'ok':
-                break
-    else:
-        context = {'status': "Aucun produit n'a été trouvé."}
-    # Add item selected by user to context
-    # data = copy.deepcopy(context)
-    context['selected'] = selected_item
-
-    try:
-        context['products'] = sorted(
-            context['products'], key=lambda data: data['nutrition_grades'])
-    except:
-        pass
-
-    # data['products'].append(selected_item)
-    # request.session['products'] = data['products']
     return render(request, 'foods/subs.html', context)
 
 
