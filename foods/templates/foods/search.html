@@ -49,24 +49,26 @@
                 </div>
             </div> {% endfor %}
         </div>
-    </div>
+
     {% else %}
     <div class="col p-2 text-center">
         <h1 class="text-uppercase">{{ status }}</h1>
     </div>
     {% endif %}
-    <div class="pagination">
-        {% if products.has_previous %}
-            <a href="?query={{ query}}&page=1">&laquo; first</a>
-            <a href="?query={{ query }}&page={{ products.previous_page_number }}">previous</a>
+    <div class="row">
+    <div class="col text-center">
+            {% if products.has_previous %}
+            <a href="?query={{ query}}&page=1">&laquo; Première</a>&nbsp;
+            <a href="?query={{ query }}&page={{ products.previous_page_number }}">Précédent</a>
         {% endif %}
-            Page {{ products.number }} of {{ products.paginator.num_pages }}.
+            &nbsp;Page {{ products.number }} de {{ products.paginator.num_pages }}&nbsp;
 
         {% if products.has_next %}
-             <a href="?query={{ query }}&page={{ products.next_page_number }}">next</a>
-            <a href="?query={{ query }}&page={{ products.paginator.num_pages }}">last &raquo;</a>
+            <a href="?query={{ query }}&page={{ products.next_page_number }}">Suivant</a>&nbsp;
+            <a href="?query={{ query }}&page={{ products.paginator.num_pages }}">Dernière &raquo;</a>
         {% endif %}
     </div>
-
+    </div>
+</div>
 </section>
 {% endblock %}
