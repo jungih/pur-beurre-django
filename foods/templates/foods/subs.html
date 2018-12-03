@@ -6,21 +6,21 @@
             <div class="row justify-content-center">
                 <div class="col-sm-6 text-center">
                     <div class="image mb-3">
-                        {% if selected.nutrition_grades != "None" %}
-                        <div class="grade bg-{{ selected.nutrition_grades }}">
-                            <h1>{{ selected.nutrition_grades }}</h1>
+                        {% if selected.nutrition__grade_fr != "None" %}
+                        <div class="grade bg-{{ selected.nutrition__grade_fr }}">
+                            <h1>{{ selected.nutrition__grade_fr }}</h1>
                         </div>
 
                         {% endif %}
                         <a href="{% url 'foods:detail' selected.code %}">
-                            <img class="border p-1 bg-white" src="{{ selected.image_small_url }}">
+                            <img class="border p-1 bg-white" src="{{ selected.image_url }}">
                     </div>
                     <h4><a class="product-title" href="{% url 'foods:detail' selected.code %}">
-                            <b> {{ selected.product_name_fr }}</b><br>
+                            <b> {{ selected.product_name }}</b><br>
                             {{ selected.brands }} {{ selected.quantity}}
                         </a>
                     </h4>
-                    {{ selected|json_script:"selected" }}
+                    {% comment %} {{ selected|json_script:"selected" }} {% endcomment %}
                 </div>
             </div>
         </div>
@@ -34,26 +34,26 @@
     <div class="container">
         <div class="row">
             {% if status == "ok" %}
-            {% for sub in products %}
+            {% for sub in subs %}
             <div class="col-sm-12 col-md-6 col-lg-4 text-center d-flex flex-column">
                 <div class="image-border">
                     <span class="helper"></span>
                     <div class="image">
-                        {% if sub.nutrition_grades != "None" %}
-                        <div class="grade bg-{{ sub.nutrition_grades }}">
-                            <h1>{{ sub.nutrition_grades }}</h1>
+                        {% if sub.nutrition__grade_fr != "None" %}
+                        <div class="grade bg-{{ sub.nutrition__grade_fr }}">
+                            <h1>{{ sub.nutrition__grade_fr }}</h1>
                         </div>
 
                         {% endif %}
                         <a href="{% url 'foods:detail' sub.code %}">
-                            <img src="{{ sub.image_small_url }}" alt="Image de produit">
+                            <img src="{{ sub.image_url }}" alt="Image de produit">
                         </a>
                     </div>
                 </div>
                 <div>
                     <p class="name">
                         <a class="product-title" href="{% url 'foods:detail' sub.code %}">
-                            <b> {{ sub.product_name_fr }}</b><br>
+                            <b> {{ sub.product_name }}</b><br>
                             {{ sub.brands }} {{ sub.quantity}}
                         </a>
                     </p>
@@ -61,7 +61,7 @@
                 {% if user.is_authenticated %}
                 <div class='mt-auto mb-5 '>
                     <button class="save btn" value="{{ sub.code }}"><i class="far fa-save"></i> Enregistrer</button>
-                    {{ sub|json_script:sub.code }}
+                    {% comment %} {{ sub|json_script:sub.code }} {% endcomment %}
                 </div>
                 {% endif %}
             </div>

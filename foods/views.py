@@ -99,11 +99,24 @@ def search(request):
 
 
 def subs(request, code):
-
+    context = {}
     # search substitutes from foods
+    selected = Foods.objects.filter(code=code).first()
     # get a querySet and loop thorugh categories
+    context['selected'] = selected
 
-    context = {'status': "Aucun produit n'a été trouvé."}
+    categories = selected.categories_fr.split(',')
+    for category in reversed(categories):
+        subs = Foods.objects.filter(
+            Q(categories_fr__icontains=category) &
+            Q(nutrition_grade_fr__lt='c')
+        )
+        if subs.exists():
+            context['status'] = 'ok'
+            context['subs'] = subs
+            break
+    if not context['status']:
+        context['status'] = "Aucun produit n'a été trouvé."
 
     return render(request, 'foods/subs.html', context)
 
