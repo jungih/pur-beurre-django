@@ -92,8 +92,4 @@ db.sqlite3
 
 documents/
 
-<<<<<<< HEAD
-=======
-# CSV files
->>>>>>> dev
 csv/*

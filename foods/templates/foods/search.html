@@ -47,28 +47,30 @@
                             {{ product.brands }} {{ product.quantity}}
                     </p></a>
                 </div>
-            </div> {% endfor %}
+            </div>
+            {% endfor %}
         </div>
 
-    {% else %}
-    <div class="col p-2 text-center">
-        <h1 class="text-uppercase">{{ status }}</h1>
-    </div>
-    {% endif %}
-    <div class="row">
-        <div class="col text-center">
-            {% if products.has_previous %}
-                <a href="?query={{ query}}&page=1">&laquo; Première</a>&nbsp;
-                <a href="?query={{ query }}&page={{ products.previous_page_number }}">Précédent</a>
-            {% endif %}
-                &nbsp;Page {{ products.number }} de {{ products.paginator.num_pages }}&nbsp;
+        <div class="row">
+            <div class="col text-center">
+                {% if products.has_previous %}
+                    <a href="?query={{ query}}&page=1">&laquo; Première</a>&nbsp;
+                    <a href="?query={{ query }}&page={{ products.previous_page_number }}">Précédent</a>
+                {% endif %}
+                    &nbsp;Page {{ products.number }} de {{ products.paginator.num_pages }}&nbsp;
 
-            {% if products.has_next %}
-                <a href="?query={{ query }}&page={{ products.next_page_number }}">Suivant</a>&nbsp;
-                <a href="?query={{ query }}&page={{ products.paginator.num_pages }}">Dernière &raquo;</a>
-            {% endif %}
+                {% if products.has_next %}
+                    <a href="?query={{ query }}&page={{ products.next_page_number }}">Suivant</a>&nbsp;
+                    <a href="?query={{ query }}&page={{ products.paginator.num_pages }}">Dernière &raquo;</a>
+                {% endif %}
+            </div>
+
+
+        {% else %}
+        <div class="col p-2 text-center">
+            <h1 class="text-uppercase">{{ status }}</h1>
         </div>
+        {% endif %}
     </div>
-</div>
 </section>
 {% endblock %}

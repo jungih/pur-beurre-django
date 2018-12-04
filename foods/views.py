@@ -57,7 +57,7 @@ def subs(request, code):
         subs_list = Foods.objects.filter(
             Q(categories_fr__icontains=category) &
             Q(nutrition_grade_fr__lt='c')
-        ).order_by('nutrition_grade_fr', 'id')
+        ).exclude(id=selected.id).order_by('nutrition_grade_fr', 'id')
         paginator = Paginator(subs_list, 6)
         page = request.GET.get('page')
         subs = paginator.get_page(page)
