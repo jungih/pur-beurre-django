@@ -21,10 +21,10 @@
             </thead>
             <tbody>
             {% for food in myfoods %}
-                {% if food.substitute %}
+                {% if food.substitute.all %}
                 <tr class="border-top">
                     <td rowspan="{{ food.substitute.all|length }}">
-                        {% if food.nutrition_grade_fr != "None" %}
+                        {% if food.nutrition_grade_fr %}
                         <div class="circle bg-{{ food.nutrition_grade_fr }}">
                             {{food.nutrition_grade_fr|upper}}
                         </div>
@@ -34,11 +34,11 @@
                         <a class="product-title myfood-link" href="{% url 'foods:detail' food.code %}">
                             <b>{{ food.product_name }}</b> {{ food.brands }} {{ food.quantity }}
                         </a>
-                        &nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' food.id %}"><i class="fas fa-times"></i></a>
+                        &nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete_selected' food.id %}"><i class="fas fa-times"></i></a>
                     </td>
                     {% for sub in food.substitute.all %}
                     <td>
-                        {% if sub.nutrition_grade_fr != "None" %}
+                        {% if sub.nutrition_grade_fr %}
 
                         <div class="circle bg-{{ sub.nutrition_grade_fr }} h-100">
                             {{sub.nutrition_grade_fr|upper}}
@@ -49,7 +49,7 @@
                         <div class='d-inline-block'>
                             <a href="{% url 'foods:detail' sub.code %}" class='myfood-link product-title'>
                                 <b>{{ sub.product_name }}</b> {{ sub.brands }} {{ sub.quantity }}
-                            </a> &nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' sub.id %}"><i class="fas fa-times"></i></a>
+                            </a> &nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete_sub' food.id sub.id %}"><i class="fas fa-times"></i></a>
                         </div>
 
                     </td>

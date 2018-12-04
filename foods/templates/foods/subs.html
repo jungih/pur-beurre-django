@@ -7,7 +7,7 @@
             <div class="row justify-content-center">
                 <div class="col-sm-6 text-center">
                     <div class="image mb-3">
-                        {% if selected.nutrition_grade_fr != "None" %}
+                        {% if selected.nutrition_grade_fr %}
                         <div class="grade bg-{{ selected.nutrition_grade_fr }}">
                             <h1>{{ selected.nutrition_grade_fr }}</h1>
                         </div>
@@ -39,13 +39,13 @@
 <section>
     <div class="container">
         <div class="row">
-            {% if status == "ok" %}
+        {% if status == "ok" %}
             {% for sub in subs %}
             <div class="col-sm-12 col-md-6 col-lg-4 text-center d-flex flex-column">
                 <div class="image-border">
                     <span class="helper"></span>
                     <div class="image">
-                        {% if sub.nutrition_grade_fr != "None" %}
+                        {% if sub.nutrition_grade_fr %}
                         <div class="grade bg-{{ sub.nutrition_grade_fr }}">
                             <h1>{{ sub.nutrition_grade_fr }}</h1>
 
@@ -77,13 +77,26 @@
                 {% endif %}
             </div>
             {% endfor %}
-            {% else %}
+        {% else %}
             <div class="col text-center">
                 <h1 class="text-uppercase">{{ status }}</h1>
             </div>
-            {% endif %}
+        {% endif %}
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                    {% if subs.has_previous %}
+                        <a href="?query={{ query}}&page=1">&laquo; Première</a>&nbsp;
+                        <a href="?query={{ query }}&page={{ subs.previous_page_number }}">Précédent</a>
+                    {% endif %}
+                        &nbsp;Page {{ subs.number }} de {{ subs.paginator.num_pages }}&nbsp;
+
+                    {% if subs.has_next %}
+                        <a href="?query={{ query }}&page={{ subs.next_page_number }}">Suivant</a>&nbsp;
+                        <a href="?query={{ query }}&page={{ subs.paginator.num_pages }}">Dernière &raquo;</a>
+                    {% endif %}
+            </div>
         </div>
     </div>
-
 </section>
 {% endblock %}

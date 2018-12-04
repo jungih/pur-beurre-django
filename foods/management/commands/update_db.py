@@ -33,17 +33,17 @@ class Command(BaseCommand):
                     if re.match('France', str(countries_fr), re.I) is not None:
                         if categories_fr:
                             try:
-                                Foods.objects.get_or_create(code=line['code'],
-                                                            defaults={
-                                                            'url': url,
-                                                            'product_name': product_name,
-                                                            'quantity': quantity,
-                                                            'brands': brands,
-                                                            'categories_fr': categories_fr,
-                                                            'nutrition_grade_fr': nutrition_grade_fr,
-                                                            'image_url': image_url,
-                                                            'countries_fr': countries_fr
-                                                            })
+                                Foods.objects.update_or_create(code=line['code'],
+                                                               defaults={
+                                    'url': url,
+                                    'product_name': product_name,
+                                    'quantity': quantity,
+                                    'brands': brands,
+                                    'categories_fr': categories_fr,
+                                    'nutrition_grade_fr': nutrition_grade_fr,
+                                    'image_url': image_url,
+                                    'countries_fr': countries_fr
+                                })
                                 previous_code = code
                             except:
                                 print("Unexpected error:",

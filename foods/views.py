@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.db import transaction, IntegrityError
 from django.contrib.auth.decorators import login_required
@@ -47,18 +47,21 @@ def search(request):
 def subs(request, code):
     context = {}
     # search substitutes from foods
-    selected = Foods.objects.filter(code=code).first()
+    selected = Foods.objects.get(code=code)
     # get a querySet and loop thorugh categories
     context['selected'] = selected
 
     categories = selected.categories_fr.split(',')
 
     for category in reversed(categories):
-        subs = Foods.objects.filter(
+        subs_list = Foods.objects.filter(
             Q(categories_fr__icontains=category) &
             Q(nutrition_grade_fr__lt='c')
-        )
-        if subs.exists():
+        ).order_by('nutrition_grade_fr', 'id')
+        paginator = Paginator(subs_list, 6)
+        page = request.GET.get('page')
+        subs = paginator.get_page(page)
+        if subs:
             context['status'] = 'ok'
             context['subs'] = subs
             break
@@ -128,18 +131,28 @@ def mentions(request):
     return render(request, 'foods/mentions.html')
 
 
-class DeleteFoods(DeleteView):
-    model = Foods
-    success_url = reverse_lazy('foods:myfoods')
+def delete(request, id, sub_id):
+    obj = get_object_or_404(Foods, id=id)
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.author:
-            self.object.author.remove(request.user)
+    if sub_id:
+        sub = get_object_or_404(Foods, id=sub_id)
+    else:
+        sub = None
+    context = {
+        'selected': obj,
+        'sub': sub
+    }
+
+    if request.method == 'POST':
+        if not sub:
+            obj.author.remove(request.user)
+            obj.substitute.clear()
+            obj.save()
         else:
-            pass
-        self.object.save()
-        return HttpResponseRedirect(self.get_success_url())
+            obj.substitute.remove(sub)
+            obj.save()
+        return redirect('foods:myfoods')
+    return render(request, 'foods/foods_confirm_delete.html', context)
 
 
 @transaction.atomic()
