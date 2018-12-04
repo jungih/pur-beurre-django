@@ -20,35 +20,35 @@
                 </tr>
             </thead>
             <tbody>
-                {% for food in myfoods %}
-                {% if food.foods_set.all %}
+            {% for food in myfoods %}
+                {% if food.substitute %}
                 <tr class="border-top">
-                    <td rowspan="{{ food.foods_set.all|length }}">
-                        {% if food.nutrition_grades != "None" %}
-                        <div class="circle bg-{{ food.nutrition_grades }}">
-                            {{food.nutrition_grades|upper}}
+                    <td rowspan="{{ food.substitute.all|length }}">
+                        {% if food.nutrition_grade_fr != "None" %}
+                        <div class="circle bg-{{ food.nutrition_grade_fr }}">
+                            {{food.nutrition_grade_fr|upper}}
                         </div>
                         {% endif %}
                     </td>
-                    <td rowspan="{{ food.foods_set.all|length }}">
+                    <td rowspan="{{ food.substitute.all|length }}">
                         <a class="product-title myfood-link" href="{% url 'foods:detail' food.code %}">
-                            <b>{{ food.name }}</b> {{ food.brands }} {{ food.quantity }}
+                            <b>{{ food.product_name }}</b> {{ food.brands }} {{ food.quantity }}
                         </a>
                         &nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' food.id %}"><i class="fas fa-times"></i></a>
                     </td>
-                    {% for sub in food.foods_set.all %}
+                    {% for sub in food.substitute.all %}
                     <td>
-                        {% if sub.nutrition_grades != "None" %}
+                        {% if sub.nutrition_grade_fr != "None" %}
 
-                        <div class="circle bg-{{ sub.nutrition_grades }} h-100">
-                            {{sub.nutrition_grades|upper}}
+                        <div class="circle bg-{{ sub.nutrition_grade_fr }} h-100">
+                            {{sub.nutrition_grade_fr|upper}}
                         </div>
                         {% endif %}
                     </td>
                     <td>
                         <div class='d-inline-block'>
                             <a href="{% url 'foods:detail' sub.code %}" class='myfood-link product-title'>
-                                <b>{{ sub.name }}</b> {{ sub.brands }} {{ sub.quantity }}
+                                <b>{{ sub.product_name }}</b> {{ sub.brands }} {{ sub.quantity }}
                             </a> &nbsp;&nbsp;<a class="delete" href="{% url 'foods:delete' sub.id %}"><i class="fas fa-times"></i></a>
                         </div>
 
@@ -58,8 +58,8 @@
                 {% endfor %}
                 {% else %}
                 <tr>
-                    {% endif %}
-                    {% endfor %}
+                {% endif %}
+            {% endfor %}
                 </tr>
             </tbody>
         </table>
@@ -67,7 +67,7 @@
     </div>
 </section>
 
-<script>
+{% comment %} <script>
     $(function () {
 
         $(".product-id").on('click', function () {
@@ -77,6 +77,6 @@
         });
 
     });
-</script>
+</script> {% endcomment %}
 
 {% endblock %}

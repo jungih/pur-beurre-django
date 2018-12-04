@@ -1,25 +1,31 @@
 {% extends 'foods/base.html' %}
 {% block content %}
+{% load static %}
 <header class="sub text-center" style="background-image:url({{ selected.image_url }});padding:0;">
     <div class='selected'>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-sm-6 text-center">
                     <div class="image mb-3">
-                        {% if selected.nutrition__grade_fr != "None" %}
-                        <div class="grade bg-{{ selected.nutrition__grade_fr }}">
-                            <h1>{{ selected.nutrition__grade_fr }}</h1>
+                        {% if selected.nutrition_grade_fr != "None" %}
+                        <div class="grade bg-{{ selected.nutrition_grade_fr }}">
+                            <h1>{{ selected.nutrition_grade_fr }}</h1>
                         </div>
 
                         {% endif %}
                         <a href="{% url 'foods:detail' selected.code %}">
+                        {%if selected.image_url %}
                             <img class="border p-1 bg-white" src="{{ selected.image_url }}">
+                        {% else %}
+                            <img class="border p-1 bg-white" src="{% static 'foods/img/noimage.png' %}">
+                        {% endif %}
                     </div>
-                    <h4><a class="product-title" href="{% url 'foods:detail' selected.code %}">
+                    <h4 id="{{ selected.pk }}"><a class="product-title" href="{% url 'foods:detail' selected.code %}">
                             <b> {{ selected.product_name }}</b><br>
                             {{ selected.brands }} {{ selected.quantity}}
                         </a>
                     </h4>
+
                     {% comment %} {{ selected|json_script:"selected" }} {% endcomment %}
                 </div>
             </div>
@@ -39,14 +45,19 @@
                 <div class="image-border">
                     <span class="helper"></span>
                     <div class="image">
-                        {% if sub.nutrition__grade_fr != "None" %}
-                        <div class="grade bg-{{ sub.nutrition__grade_fr }}">
-                            <h1>{{ sub.nutrition__grade_fr }}</h1>
+                        {% if sub.nutrition_grade_fr != "None" %}
+                        <div class="grade bg-{{ sub.nutrition_grade_fr }}">
+                            <h1>{{ sub.nutrition_grade_fr }}</h1>
+
                         </div>
 
                         {% endif %}
                         <a href="{% url 'foods:detail' sub.code %}">
-                            <img src="{{ sub.image_url }}" alt="Image de produit">
+                            {%if sub.image_url %}
+                            <img class="border p-1 bg-white" src="{{ sub.image_url }}">
+                        {% else %}
+                            <img class="border p-1 bg-white" src="{% static 'foods/img/noimage.png' %}">
+                        {% endif %}
                         </a>
                     </div>
                 </div>
@@ -60,7 +71,7 @@
                 </div>
                 {% if user.is_authenticated %}
                 <div class='mt-auto mb-5 '>
-                    <button class="save btn" value="{{ sub.code }}"><i class="far fa-save"></i> Enregistrer</button>
+                    <button class="save btn" value="{{ sub.pk }}"><i class="far fa-save"></i> Enregistrer</button>
                     {% comment %} {{ sub|json_script:sub.code }} {% endcomment %}
                 </div>
                 {% endif %}

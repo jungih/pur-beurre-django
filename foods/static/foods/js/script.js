@@ -30,29 +30,28 @@ $(function () {
     });
 
     $("button.save").on("click", function () {
-        var code = $(this).val();
-        var sub = document.getElementById(code).textContent;
-        var product = document.getElementById("selected").textContent;
+
+        var subPk = $(this).val();
+        var selectedPk = $('h4').get(0).id;
 
         $.ajax({
             url: "/foods/save/",
             method: "POST",
             data: {
-                product: product,
-                sub: sub
+                selected: selectedPk,
+                sub: subPk
             },
             success: (data, textStatus, xhr) => {
-                if ($(".alert").length) {
-                    $(".alert").hide();
-                }
+                // if ($(".alert").length) {
+                //     $(".alert").hide();
+                // }
                 $(this).hide();
                 $(this).parent().html('<i class = "check fas fa-check-circle" ></i>');
             },
             error: () => {
                 var error = "Une erreur interne est apparue. Merci de recommencer votre requête."
-                if ($(".alert").length == 0) {
-                    $("section>div.container").prepend("<div class=\"alert alert-warning\">" + error + "</div>")
-                }
+                $("section>div.container").prepend("<div class=\"alert alert-warning\">" + error + "</div>")
+
             }
 
 

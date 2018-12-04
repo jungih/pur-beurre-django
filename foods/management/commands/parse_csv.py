@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from foods.models import Foods
+# from foods.models import Foods
 import csv
 import os
 import re
@@ -20,7 +20,7 @@ class Command(BaseCommand):
             csv_reader = csv.DictReader(csv_file, delimiter='\t')
 
             with open(new_file, 'w', newline='', encoding='utf-8') as new_csv:
-                fieldnames = ['code', 'url', 'product_name', 'quantity', 'brands', 'categories_fr',
+                fieldnames = ['code', 'url', 'product_name', 'quantity', 'brands', 'categories_tags',
                               'nutrition_grade_fr', 'image_url', 'countries_fr']
                 csv_writer = csv.DictWriter(
                     new_csv, delimiter='\t', fieldnames=fieldnames)
@@ -32,20 +32,20 @@ class Command(BaseCommand):
                     product_name = line['product_name']
                     brands = line['brands']
                     quantity = line['quantity']
-                    categories_fr = line['categories_fr']
+                    categories_tags = line['categories_tags']
                     image_url = line['image_url']
                     nutrition_grade_fr = line['nutrition_grade_fr']
                     countries_fr = line['countries_fr']
                     if code != previous_code:
                         if re.match('France', str(countries_fr), re.I) is not None:
-                            if categories_fr:
+                            if categories_tags:
                                 csv_writer.writerow(
                                     {'code': code,
                                      'url': url,
                                      'product_name': product_name,
                                      'brands': brands,
                                      'quantity': quantity,
-                                     'categories_fr': categories_fr,
+                                     'categories_tags': categories_tags,
                                      'image_url': image_url,
                                      'nutrition_grade_fr': nutrition_grade_fr,
                                      'countries_fr': countries_fr}

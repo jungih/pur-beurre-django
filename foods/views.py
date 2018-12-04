@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.db import transaction, IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.generic.edit import DeleteView
 from django.urls import reverse_lazy
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.contrib.postgres.search import SearchVector, SearchRank, SearchQuery
 from django.db.models import Q
 from django.contrib.auth.models import User
 from .models import Foods
@@ -16,59 +15,6 @@ import json
 import copy
 import re
 from bs4 import BeautifulSoup
-
-PROPERTIES = [
-    'code',
-    'product_name_fr',
-    'brands',
-    'quantity',
-    'image_url',
-    'categories_hierarchy',
-    'nutrition_grades',
-
-
-]
-
-
-def http_request(payload):
-    url = 'https://fr.openfoodfacts.org/cgi/search.pl'
-    req = requests.get(url, params=payload)
-    context = {}
-    if req.ok:
-        data = req.json()
-        if data['count'] > 0:
-
-            products = []
-            for item in data['products']:
-                product = {}
-                for key in PROPERTIES:
-
-                    try:
-                        if not item[key]:
-                            raise KeyError
-                    except KeyError:
-                        product[key] = "None"
-                    else:
-                        if key == 'brands':
-                            product[key] = item[key].split(',')[-1]
-                        else:
-                            product[key] = item[key]
-
-                products.append(product)
-
-                # item = (k: v if v else "None"
-                #         for k, v in {k: product[k] if k in product else None
-                #             for k in PROPERTIES}.items())
-            context['products'] = products
-
-            context['status'] = 'ok'
-            return context
-        else:
-            context['status'] = "Aucun produit n'a été trouvé."
-            return context
-    else:
-        context['status'] = f'Error: {req.status_code}'
-        return context
 
 
 def index(request):
@@ -106,6 +52,7 @@ def subs(request, code):
     context['selected'] = selected
 
     categories = selected.categories_fr.split(',')
+
     for category in reversed(categories):
         subs = Foods.objects.filter(
             Q(categories_fr__icontains=category) &
@@ -181,42 +128,37 @@ def mentions(request):
     return render(request, 'foods/mentions.html')
 
 
-class FoodsDelete(DeleteView):
+class DeleteFoods(DeleteView):
     model = Foods
     success_url = reverse_lazy('foods:myfoods')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.author:
+            self.object.author.remove(request.user)
+        else:
+            pass
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 @transaction.atomic()
 def save(request):
     current_user = request.user
 
-    def add_db(item):
-        food = Foods.objects.create(
-            code=item['code'],
-            name=item['product_name_fr'],
-            image_url=item['image_small_url'],
-            nutrition_grades=item['nutrition_grades'],
-            brands=item['brands'],
-            quantity=item['quantity'])
-        return food
-
     if request.method == 'POST':
-        sub_data = json.loads(request.POST['sub'])
-        product_data = json.loads(request.POST['product'])
+        selected_pk = json.loads(request.POST['selected'])
+        sub_pk = json.loads(request.POST['sub'])
         try:
             with transaction.atomic():
-                product = Foods.objects.filter(
-                    author=current_user, code=product_data['code'])
+                selected_product = Foods.objects.get(pk=selected_pk)
+                selected_product.author.add(current_user)
+                selected_product.save()
 
-                if not product.exists():
-                    original = add_db(product_data)
-                else:
-                    original = product.first()
-                original.author = current_user
-                original.save()
-                sub = add_db(sub_data)
-                sub.substitute = original
-                sub.save()
+                sub_product = Foods.objects.get(pk=sub_pk)
+                sub_product.substitute.add(selected_product)
+                sub_product.save()
+
             return HttpResponse(status=201)
         except IntegrityError:
             return HttpResponse(status=409)

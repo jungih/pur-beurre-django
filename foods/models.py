@@ -15,11 +15,10 @@ class Foods(models.Model):
     countries_fr = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(default=timezone.now)
     author = models.ManyToManyField(User)
-    substitute = models.ForeignKey(
-        'self', on_delete=models.CASCADE, null=True)
+    substitute = models.ManyToManyField('self')
 
     class Meta:
-        ordering = ['nutrition_grade_fr']
+        ordering = ['pk']
 
     def __str__(self):
-        return self.name
+        return self.product_name
