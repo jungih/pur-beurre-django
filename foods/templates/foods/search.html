@@ -1,5 +1,6 @@
 {% extends 'foods/base.html' %}
 {% block content %}
+{% load static %}
 <header class="sub text-white">
     <div class="container">
         <div class="row justify-content-center">
@@ -23,14 +24,18 @@
                 <div class="image-border">
                     <span class="helper"></span>
                     <div class="image">
-                        {% if product.nutrition_grades != "None" %}
-                        <div class="grade bg-{{ product.nutrition_grades }}">
-                            <h1>{{ product.nutrition_grades }}</h1>
+                        {% if product.nutrition_grade_fr %}
+                        <div class="grade bg-{{ product.nutrition_grade_fr }}">
+                            <h1>{{ product.nutrition_grade_fr }}</h1>
                         </div>
 
                         {% endif %}
                         <a href="{% url 'foods:subs' product.code %}">
-                            <img src="{{ product.image_small_url }}" alt="Image de porudit">
+                            {% if product.image_url %}
+                            <img class="border p-1 bg-white" src="{{ product.image_url }}" alt="{{ product.product_name }}">
+                            {% else %}
+                             <img class="border p-1 bg-white" src="{% static 'foods/img/noimage.png' %}" alt="{{ product.product_name }}">
+                            {% endif %}
                         </a>
                     </div>
 
@@ -38,17 +43,32 @@
                 <div class="p-2">
                     <p class="name">
                         <a class="product-title" href="{% url 'foods:subs' product.code %}">
-                            <b> {{ product.product_name_fr }}</b><br>
+                            <b> {{ product.product_name }}</b><br>
                             {{ product.brands }} {{ product.quantity}}
                     </p></a>
                 </div>
             </div> {% endfor %}
         </div>
-    </div> {% else %} <div class="col p-2 text-center">
+
+    {% else %}
+    <div class="col p-2 text-center">
         <h1 class="text-uppercase">{{ status }}</h1>
     </div>
     {% endif %}
-    </div>
+    <div class="row">
+        <div class="col text-center">
+            {% if products.has_previous %}
+                <a href="?query={{ query}}&page=1">&laquo; Première</a>&nbsp;
+                <a href="?query={{ query }}&page={{ products.previous_page_number }}">Précédent</a>
+            {% endif %}
+                &nbsp;Page {{ products.number }} de {{ products.paginator.num_pages }}&nbsp;
 
+            {% if products.has_next %}
+                <a href="?query={{ query }}&page={{ products.next_page_number }}">Suivant</a>&nbsp;
+                <a href="?query={{ query }}&page={{ products.paginator.num_pages }}">Dernière &raquo;</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
 </section>
 {% endblock %}

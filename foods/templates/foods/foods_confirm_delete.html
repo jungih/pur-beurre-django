@@ -11,9 +11,17 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <form method="POST">{% csrf_token %}
-                    <p class='text-center'>Etes-vous sûr que vous voulez supprimer <b>"{{ object }}"</b> ?</p>
+                    <p class='product-title text-center'>Etes-vous sûr que vous voulez supprimer
+                    "
+                    {% if sub %}
+                        <b>{{ sub.product_name }}</b> {{ sub.brands }} {{sub.quantity}}
+                    {% else %}
+                        <b>{{ selected.product_name }}</b> {{ selected.brands }} {{selected.quantity}}
+                    {% endif %}
+                    "
+                    &nbsp; ?</p>
                     <div class="text-right">
-                        <button type="submit " class="btn btn-danger" value="Supprimer">Supprimer</button>
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
                         <button onclick="window.history.back();" class="btn btn-secondary" type="button"> Annuler</button>
                     </div>
                 </form>
