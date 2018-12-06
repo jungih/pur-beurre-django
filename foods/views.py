@@ -180,7 +180,7 @@ def save(request):
 @login_required
 def myfoods(request):
     user = request.user
-    myfoods = user.foods_set.all().order_by('-created_at')
+    myfoods = user.food_set.all().order_by('id')
 
     context = {
         'myfoods': myfoods
