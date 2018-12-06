@@ -2,7 +2,7 @@ import unittest
 import json
 from unittest.mock import patch
 from django.test import TestCase, Client
-from foods.views import search, http_request, Scrap
+from foods.views import search, Scrap
 from django.urls import reverse
 from django.contrib.auth.models import User
 
@@ -16,149 +16,51 @@ class TestIndex(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-@patch('foods.views.requests.get')
-class SearchViewTest(unittest.TestCase):
-    """detail veiw function test3"""
+# @patch('foods.views.requests.get')
+# class TestDetailView(unittest.TestCase):
+#     def test_context(self, mock_requests):
+#         """Test context values and status_code"""
 
-    def test_status_code(self, mock_get):
-        """ Test status_code return"""
+#         c = Client()
+#         mock_requests.return_value.text = "Hello world"
 
-        self.client = Client()
-        mock_get.return_value.ok = False
-        view_response = self.client.get(
-            reverse('foods:search'), {'query': 'nutella'})
-        self.assertEqual(view_response.status_code, 200)
+#         response = c.get(reverse('foods:detail', args=['product_code']))
 
-    def test_request_error(self, mock_get):
-        """Request Error Test"""
+#         self.assertEqual(
+#             response.context['score'], 'Les données non présentes')
+#         self.assertEqual(
+#             response.context['nutrient'], 'Les données non présentes')
+#         self.assertFalse(response.context['image_url'])
+#         self.assertFalse(response.context['name'])
+#         self.assertEqual(response.context['code'], "product_code")
 
-        mock_get.return_value.ok = False
-        mock_get.return_value.status_code = 500
-        response = http_request(None)
-        self.assertEqual(response['status'], 'Error: 500')
-
-    def test_request_whit_zero_response(self, mock_get):
-        """0 porudcuts found"""
-
-        mock_get.return_value.ok = True  # status = ok
-        mock_get.return_value.json.return_value = {
-            'count': 0}  # .json() mock
-        response = http_request(None)
-        self.assertEqual(response['status'], "Aucun produit n'a été trouvé.")
-
-    def test_request_response(self, mock_get):
-        """requset success"""
-
-        mock_get.return_value.ok = True  # status = ok
-        mock_get.return_value.json.return_value = {
-            'count': 1,
-            'products': [{'product_name_fr': 'Nutella'}]
-        }  # .json() mock
-        response = response = http_request(None)
-
-        PROPERTIES = [
-            'code',
-            'product_name_fr',
-            'brands',
-            'quantity',
-            'image_url',
-            'image_small_url',
-            'categories_hierarchy',
-            'nutrition_grades'
-
-        ]
-        # check for keys in 'products' dictioinary in response
-        for key in PROPERTIES:
-            for product in response['products']:
-                self.assertTrue(key in product)
-        # Check value of 'status' in response
-        self.assertEqual(response['status'], 'ok')
+#         self.assertEqual(response.status_code, 200)
 
 
-@patch('foods.views.requests.get')
-class TestSubView(unittest.TestCase):
-    """Test Sub View3"""
+# class TestLogin(TestCase):
+#     def setUp(self):
+#         self.user = User.objects.create_user(username='test', password='12345')
+#         self.client.login(username='test', password='12345')
 
-    def setUp(self):
-        self.client = Client()
-        self.code = '00000'
+#     def test_save_post(self):
+#         """test a success post"""
 
-        # Create a dummy session
-        session = self.client.session
-        data = {"products": [
-            {"code": self.code,
-             "categories_hierarchy": ["fr: category_1"],
-             "brands": "no_brand"
-             }],
-            "status": "ok"}
-        session['data'] = json.dumps(data)
-        session.save()
+#         self.data = {
+#             "code": "1234567",
+#             "product_name_fr": "nutella",
+#             'image_small_url': "image.jpg",
+#             "nutrition_grades": "a",
+#             "brands": "ferrero",
+#             "quantity": "500g"
+#         }
+#         self.data = json.dumps(self.data)
+#         response = self.client.post(reverse('foods:save'), {
+#             "sub": self.data, "product": self.data})
 
-    def test_status_code_200(self, mock_requests):
-        """Check if page loads correctly"""
+#         self.assertEqual(response.status_code, 201)
 
-        # mock requests.get
-        mock_requests.return_value.ok = True
-        mock_requests.return_value.json.return_value = {'count': 0}
-        response = self.client.get(reverse('foods:subs', args=[self.code]))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.context['status'], "Aucun produit n'a été trouvé.")
+#     def test_myfoods_view(self):
 
-    def test_status_code_404(self, mock_requests):
-        """Check for error 404"""
-
-        mock_requests.return_value.ok = True
-        mock_requests.return_value.json.return_value = {'count': 0}
-        response = self.client.get(reverse('foods:subs', args=["no_code"]))
-        self.assertEqual(response.status_code, 404)
-
-
-@patch('foods.views.requests.get')
-class TestDetailView(unittest.TestCase):
-    def test_context(self, mock_requests):
-        """Test context values and status_code"""
-
-        c = Client()
-        mock_requests.return_value.text = "Hello world"
-
-        response = c.get(reverse('foods:detail', args=['product_code']))
-
-        self.assertEqual(
-            response.context['score'], 'Les données non présentes')
-        self.assertEqual(
-            response.context['nutrient'], 'Les données non présentes')
-        self.assertFalse(response.context['image_url'])
-        self.assertFalse(response.context['name'])
-        self.assertEqual(response.context['code'], "product_code")
-
-        self.assertEqual(response.status_code, 200)
-
-
-class TestLogin(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username='test', password='12345')
-        self.client.login(username='test', password='12345')
-
-    def test_save_post(self):
-        """test a success post"""
-
-        self.data = {
-            "code": "1234567",
-            "product_name_fr": "nutella",
-            'image_small_url': "image.jpg",
-            "nutrition_grades": "a",
-            "brands": "ferrero",
-            "quantity": "500g"
-        }
-        self.data = json.dumps(self.data)
-        response = self.client.post(reverse('foods:save'), {
-            "sub": self.data, "product": self.data})
-
-        self.assertEqual(response.status_code, 201)
-
-    def test_myfoods_view(self):
-
-        response = self.client.get(reverse('foods:myfoods'))
-        self.assertEqual(response.status_code, 200)
-        self.assertFalse(response.context['myfoods'])
+#         response = self.client.get(reverse('foods:myfoods'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertFalse(response.context['myfoods'])

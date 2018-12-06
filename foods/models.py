@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 
-class Foods(models.Model):
+class Food(models.Model):
     code = models.CharField(max_length=100, null=True)
     url = models.CharField(max_length=500, null=True)
     product_name = models.CharField(max_length=255, null=True)
@@ -13,7 +13,6 @@ class Foods(models.Model):
     image_url = models.TextField(max_length=255, null=True)
     nutrition_grade_fr = models.CharField(max_length=1, null=True)
     countries_fr = models.CharField(max_length=255, null=True)
-    created_at = models.DateTimeField(default=timezone.now)
     author = models.ManyToManyField(User)
     substitute = models.ManyToManyField('self')
 

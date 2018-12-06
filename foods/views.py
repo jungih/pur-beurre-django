@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.contrib.auth.models import User
-from .models import Foods
+from .models import Food
 
 import requests
 import json
@@ -29,7 +29,7 @@ def search(request):
         query = request.GET.get('query')
         # search products from DB
         if query:
-            products_list = Foods.objects.filter(
+            products_list = Food.objects.filter(
                 product_name__icontains=query).order_by('id')
         if products_list:
             paginator = Paginator(products_list, 6)  # Show 6 products perpage
@@ -47,14 +47,14 @@ def search(request):
 def subs(request, code):
     context = {}
     # search substitutes from foods
-    selected = Foods.objects.get(code=code)
+    selected = Food.objects.get(code=code)
     # get a querySet and loop thorugh categories
     context['selected'] = selected
 
     categories = selected.categories_fr.split(',')
 
     for category in reversed(categories):
-        subs_list = Foods.objects.filter(
+        subs_list = Food.objects.filter(
             Q(categories_fr__icontains=category) &
             Q(nutrition_grade_fr__lt='c')
         ).exclude(id=selected.id).order_by('nutrition_grade_fr', 'id')
@@ -132,10 +132,10 @@ def mentions(request):
 
 
 def delete(request, id, sub_id):
-    obj = get_object_or_404(Foods, id=id)
+    obj = get_object_or_404(Food, id=id)
 
     if sub_id:
-        sub = get_object_or_404(Foods, id=sub_id)
+        sub = get_object_or_404(Food, id=sub_id)
     else:
         sub = None
     context = {
@@ -164,11 +164,11 @@ def save(request):
         sub_pk = json.loads(request.POST['sub'])
         try:
             with transaction.atomic():
-                selected_product = Foods.objects.get(pk=selected_pk)
+                selected_product = Food.objects.get(pk=selected_pk)
                 selected_product.author.add(current_user)
                 selected_product.save()
 
-                sub_product = Foods.objects.get(pk=sub_pk)
+                sub_product = Food.objects.get(pk=sub_pk)
                 sub_product.substitute.add(selected_product)
                 sub_product.save()
 
