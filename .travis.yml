@@ -4,7 +4,10 @@ python:
 
 before_script:
   - pip install -r requirements.txt
-  - psql -c 'create database travis_ci_test;' -U postgres
+
+branches:
+  only:
+    'development'
 
 services:
   - postgresql
@@ -12,5 +15,4 @@ services:
 env: DJANGO_SETTINGS_MODULE=disquaire_project.settings.travis
 
 script:
-  - ./manage.py migrate
-  - ./manage.py update_db
+  - ./manage.py test
