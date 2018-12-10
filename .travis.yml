@@ -9,9 +9,6 @@ branches:
 install:
   - pip install -r requirements.txt
 
-before_script:
-  - psql -c 'create database travis_ci_test;' -U postgres
-
 services:
   - postgresql
 
@@ -19,6 +16,4 @@ services:
 env: DJANGO_SETTINGS_MODULE=pur_beurre.settings.travis
 
 script:
-  - python manage.py makemigrations
-  - python manage.py migrate
   - python manage.py test
