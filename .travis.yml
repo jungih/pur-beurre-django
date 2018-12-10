@@ -12,7 +12,7 @@ branches:
 services:
   - postgresql
 
-env: DJANGO_SETTINGS_MODULE=disquaire_project.settings.travis
+env: DJANGO_SETTINGS_MODULE=pur_beurre.settings.travis
 
 script:
   - coverage run manage.py test
