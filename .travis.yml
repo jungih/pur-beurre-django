@@ -19,6 +19,6 @@ services:
 env: DJANGO_SETTINGS_MODULE=pur_beurre.settings.travis
 
 script:
-  - ./manage.py makemigrations
-  - ./manage.py migrate
-  - ./manage.py test
+  - python manage.py makemigrations
+  - python manage.py migrate
+  - python manage.py test
