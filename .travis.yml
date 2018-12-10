@@ -15,4 +15,4 @@ services:
 env: DJANGO_SETTINGS_MODULE=pur_beurre.settings.travis
 
 script:
-  - coverage run manage.py test
+  - ./manage.py test
