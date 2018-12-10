@@ -1,17 +1,17 @@
 {% extends 'foods/base.html' %}
 {% block content %}
 {% load static %}
-<header class="sub text-center" style="background-image:url({{ image_url }});padding:0;">
+<header class="sub text-center" style="background-image:url({{ product.image_url }});padding:0;">
     <div class='selected'>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-6">
-                {% if image_url %}
-                    <img class="p-1 bg-white product-image" src="{{ image_url }}" alt="Image prouduit">
+                {% if product.image_url %}
+                    <img class="p-1 bg-white product-image" src="{{ product.image_url }}" alt="Image prouduit">
                 {% else %}
                     <img class="p-1 bg-white product-image" src="{% static 'foods/img/noimage.png' %}" alt="Image prouduit">
                 {% endif %}
-                    <h4 class="mt-3">{{name}}</h4>
+                    <h4 class="mt-3 product-title">{{ product.product_name}} {{product.brands}} {{ product.quantity }}</h4>
                 </div>
             </div>
         </div>
@@ -24,16 +24,21 @@
         <div class="row justify-content-center mb-5">
             <div class="col-md-6">
                 <h4>Note nutritionnelle de couleur NutriScore</h4>
-                {{score|safe}}
+                <img src = "{% static image_score %}">
             </div>
             <div class="col-md-6">
                 <h4 class="mb-4">Repères nutritionnels pour 100 g</h4>
-                {{nutrient|safe}}
+                <ul>
+                    <li>{{ product.fat_100g }}g <b> Matières grasses / Lipides </b></li>
+                    <li>{{ product.saturated_fat_100g }}g<b> Acides gras saturés</b></li>
+                    <li>{{ product.sugars_100g }}g<b> Sucres</b></li>
+                    <li>{{ product.salt_100g }}g<b> Sel</b></li>
+                </ul>
             </div>
         </div>
         <div class="row">
             <div class="col text-center">
-                <a href="http://fr.openfoodfacts.org/produit/{{ code }}" target="_blank">
+                <a href="{{ product.url }}" target="_blank">
                     <button class="btn btn-primary">
                         Voir la fiche d'OpenFoodFacts
                     </button>

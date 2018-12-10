@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
+from django.conf import settings
 
 
 class Food(models.Model):
@@ -13,11 +13,12 @@ class Food(models.Model):
     image_url = models.TextField(max_length=255, null=True)
     nutrition_grade_fr = models.CharField(max_length=1, null=True)
     countries_fr = models.CharField(max_length=255, null=True)
-    author = models.ManyToManyField(User)
+    fat_100g = models.FloatField(null=True)
+    saturated_fat_100g = models.FloatField(null=True)
+    sugars_100g = models.FloatField(null=True)
+    salt_100g = models.FloatField(null=True)
+    author = models.ManyToManyField(settings.AUTH_USER_MODEL)
     substitute = models.ManyToManyField('self')
 
-    class Meta:
-        ordering = ['pk']
-
     def __str__(self):
-        return self.product_name
+        return self.product_name or 'no name'

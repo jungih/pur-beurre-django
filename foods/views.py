@@ -31,15 +31,16 @@ def search(request):
         if query:
             products_list = Food.objects.filter(
                 product_name__icontains=query).order_by('id')
-        if products_list:
-            paginator = Paginator(products_list, 6)  # Show 6 products perpage
-            page = request.GET.get('page')
-            products = paginator.get_page(page)
-            context['products'] = products
-            context['query'] = query
-            context['status'] = 'ok'
-        else:
-            context['status'] = "Aucun produit n'a été trouvé."
+            if products_list:
+                # Show 6 products perpage
+                paginator = Paginator(products_list, 6)
+                page = request.GET.get('page')
+                products = paginator.get_page(page)
+                context['products'] = products
+                context['query'] = query
+                context['status'] = 'ok'
+            else:
+                context['status'] = "Aucun produit n'a été trouvé."
 
     return render(request, 'foods/search.html', context)
 
@@ -65,63 +66,20 @@ def subs(request, code):
             context['status'] = 'ok'
             context['subs'] = subs
             break
-    if not context['status']:
+    if 'status' not in context:
         context['status'] = "Aucun produit n'a été trouvé."
 
     return render(request, 'foods/subs.html', context)
 
 
-class Scrap:
-    """Scrap html code from openfoodfacts.org using
-    BeutifulSoup4
-    """
-
-    def __init__(self, code):
-        req = requests.get(
-            f'https://fr.openfoodfacts.org/product/{code}/').text
-        self.soup = BeautifulSoup(req, 'lxml')
-
-    def get_div(self, string):
-        self.string = string
-
-        try:
-            tag = self.soup.find(string=re.compile(self.string))
-            tag = tag.find_parent("div").contents
-            tag.pop(1)
-            return "".join([str(i) for i in tag])
-        except:
-            return 'Les données non présentes'
-
-    def get_img(self, string):
-        self.string = string
-        try:
-            tag = self.soup.find('img', class_=self.string)
-            image = tag['data-src']
-            return image
-        except:
-            return None
-
-    def get_name(self):
-        try:
-            tag = self.soup.find('h1')
-            name = tag.string
-            return name
-        except:
-            return None
-
-
 def detail(request, code):
-    s = Scrap(code)
-    score = s.get_div("NutriScore")
-    nutrient = s.get_div("Repères")
-    image_url = s.get_img("show-for-xlarge-up")
-    name = s.get_name()
+
+    product = Food.objects.get(code=code)
+    image_score = f'foods/img/nutriscore-{product.nutrition_grade_fr}.svg'
+
     context = {
-        'score': score,
-        'nutrient': nutrient,
-        'code': code,
-        'image_url': image_url,
-        'name': name
+        'product': product,
+        'image_score': image_score
     }
 
     return render(request, 'foods/detail.html', context)
@@ -131,7 +89,44 @@ def mentions(request):
     return render(request, 'foods/mentions.html')
 
 
+@transaction.atomic()
+def save(request):
+    current_user = request.user
+
+    if request.method == 'POST':
+        selected_pk = json.loads(request.POST['selected'])
+        sub_pk = json.loads(request.POST['sub'])
+        try:
+            with transaction.atomic():
+                selected_product = Food.objects.get(pk=selected_pk)
+                if current_user not in selected_product.author.all():
+                    selected_product.author.add(current_user)
+                    selected_product.save()
+
+                sub_product = Food.objects.get(pk=sub_pk)
+                if sub_product not in selected_product.substitute.all():
+                    sub_product.substitute.add(selected_product)
+                    sub_product.save()
+
+            return HttpResponse(status=201)
+        except IntegrityError:
+            return HttpResponse(status=409)
+
+
+@login_required
+def myfoods(request):
+    user = request.user
+    myfoods = user.food_set.all().order_by('id')
+
+    context = {
+        'myfoods': myfoods
+    }
+    return render(request, 'foods/myfoods.html', context)
+
+
 def delete(request, id, sub_id):
+    """Removes relation"""
+
     obj = get_object_or_404(Food, id=id)
 
     if sub_id:
@@ -153,36 +148,3 @@ def delete(request, id, sub_id):
             obj.save()
         return redirect('foods:myfoods')
     return render(request, 'foods/foods_confirm_delete.html', context)
-
-
-@transaction.atomic()
-def save(request):
-    current_user = request.user
-
-    if request.method == 'POST':
-        selected_pk = json.loads(request.POST['selected'])
-        sub_pk = json.loads(request.POST['sub'])
-        try:
-            with transaction.atomic():
-                selected_product = Food.objects.get(pk=selected_pk)
-                selected_product.author.add(current_user)
-                selected_product.save()
-
-                sub_product = Food.objects.get(pk=sub_pk)
-                sub_product.substitute.add(selected_product)
-                sub_product.save()
-
-            return HttpResponse(status=201)
-        except IntegrityError:
-            return HttpResponse(status=409)
-
-
-@login_required
-def myfoods(request):
-    user = request.user
-    myfoods = user.food_set.all().order_by('id')
-
-    context = {
-        'myfoods': myfoods
-    }
-    return render(request, 'foods/myfoods.html', context)

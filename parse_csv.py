@@ -14,7 +14,8 @@ with open(file_path, 'r', newline='', encoding='utf-8') as csv_file:
 
     with open(new_file, 'w', newline='', encoding='utf-8') as new_csv:
         fieldnames = ['code', 'url', 'product_name', 'quantity', 'brands', 'categories_fr',
-                      'nutrition_grade_fr', 'image_url', 'countries_fr']
+                      'nutrition_grade_fr', 'image_url', 'countries_fr',
+                      'fat_100g', 'saturated_fat_100g', 'sugars_100g', 'salt_100g']
         csv_writer = csv.DictWriter(
             new_csv, delimiter='\t', fieldnames=fieldnames)
         csv_writer.writeheader()
@@ -41,7 +42,11 @@ with open(file_path, 'r', newline='', encoding='utf-8') as csv_file:
                              'categories_fr': categories_fr,
                              'image_url': image_url,
                              'nutrition_grade_fr': nutrition_grade_fr,
-                             'countries_fr': countries_fr
+                             'countries_fr': countries_fr,
+                             'fat_100g': line['fat_100g'],
+                             'saturated_fat_100g': line['saturated-fat_100g'],
+                             'sugars_100g': line['sugars_100g'],
+                             'salt_100g': line['salt_100g']
                              }
                         )
                         previous_code = code

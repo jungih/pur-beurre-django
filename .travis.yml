@@ -15,4 +15,4 @@ services:
 env: DJANGO_SETTINGS_MODULE=disquaire_project.settings.travis
 
 script:
-  - ./manage.py test
+  - coverage run manage.py test
