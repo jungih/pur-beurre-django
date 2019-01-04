@@ -1,7 +1,7 @@
 # Pur Beurre
 Pur Beurre can help you to make healthier food choices.
 
-By looking up the neutrition score of a product of your choice, it finds products that are much healtiher.
+By looking up the neutrition score of a product of your choice, it can find products that are much healtiher for you.
 
 ## Built with
 - Python 3.6.5
