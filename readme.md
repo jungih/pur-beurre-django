@@ -21,6 +21,6 @@ __12.07.2018__
 - Search products from its own database
 
 __01.04.2019__
-- update command added for manage.py
+- 'update' command added for manage.py
 
 
