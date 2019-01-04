@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS foods_temp AS
 		   saturated_fat_100g,
 		   sugars_100g,
 		   salt_100g
-FROM foods_food;
+FROM foods_food
+WITH NO DATA;
 
 TRUNCATE foods_temp;
 
