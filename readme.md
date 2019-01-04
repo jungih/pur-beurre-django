@@ -19,7 +19,7 @@ By looking up the neutrition score of a product of your choice, it finds product
 __12.07.2018__
 - Deployed to a server
 - Search products from its own database
---01.04.2019__
+__01.04.2019__
 - update command added for manage.py
 
 
