@@ -11,7 +11,7 @@ By looking up the neutrition score of a product of your choice, it finds product
 - [Open Food Facts](https://fr.openfoodfacts.org/data)
 
 ## Deployment
-- https://pur-beurre-django.herokuapp.com (old version)
+- https://pur-beurre-django.herokuapp.com
 
 ## Updates
 __12.07.2018__
