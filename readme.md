@@ -19,4 +19,6 @@ __01.04.2019__
 
 __12.07.2018__
 - Deployed to a server
+- Monitor errors using Sentry
+- TravisCI for continuous integration
 - Search products from its own database
